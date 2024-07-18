@@ -1,0 +1,20 @@
+
+#Regular Inference Q8
+./LlamaBuildDebug/bin/llama-cli -m ./models/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q8_0.gguf 2>errorsFolder/Q8/error 1>outputsFolder/Q8/output -p "What is there to do in Seattle, Washington?" -n 300 -e -ngl 33 -t 16
+
+#Regular Inference Q4
+./LlamaBuildDebug/bin/llama-cli -m ./models/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q4_K_M.gguf 2>errorsFolder/Q4/error 1>outputsFolder/Q4/output -p "What is there to do in Seattle, Washington?" -n 300 -e -ngl 33 -t 16
+
+#Nvprof Q8 
+nvprof ./LlamaBuildDebug/bin/llama-cli -m ./models/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q8_0.gguf 2>errorsFolder/Q8/errorNvprof 1>outputsFolder/Q8/outputNvprof -p "What is there to do in Seattle, Washington?" -n 300 -e -ngl 33 -t 16
+
+#Nvprof Q4
+nvprof ./LlamaBuildDebug/bin/llama-cli -m ./models/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q4_K_M.gguf 2>errorsFolder/Q4/errorNvprof 1>outputsFolder/Q4/outputNvprof -p "What is there to do in Seattle, Washington?" -n 300 -e -ngl 33 -t 16
+
+#Gprof Q8
+gprof ./LlamaBuildDebug/bin/llama-cli -m ./models/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q8_0.gguf 2>errorsFolder/Q8/errorGprof 1>outputsFolder/Q8/outputGprof gmon.out
+
+#Gprof Q4
+gprof ./LlamaBuildDebug/bin/llama-cli -m ./models/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q4_K_M.gguf 2>errorsFolder/Q4/errorGprof 1>outputsFolder/Q4/outputGprof gmon.out
+
+

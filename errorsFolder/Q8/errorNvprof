@@ -1,0 +1,506 @@
+==14461== NVPROF is profiling process 14461, command: ./LlamaBuildDebug/bin/llama-cli -m ./models/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q8_0.gguf -p What is there to do in Seattle, Washington? -n 300 -e -ngl 33 -t 16
+Log start
+main: build = 3400 (97bdd26)
+main: built with gcc (GCC) 11.2.0 for x86_64-pc-linux-gnu
+main: seed  = 1721343368
+llama_model_loader: loaded meta data with 21 key-value pairs and 291 tensors from ./models/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q8_0.gguf (version GGUF V3 (latest))
+llama_model_loader: Dumping metadata keys/values. Note: KV overrides do not apply in this output.
+llama_model_loader: - kv   0:                       general.architecture str              = llama
+llama_model_loader: - kv   1:                               general.name str              = Meta-Llama-3-8B-Instruct-imatrix
+llama_model_loader: - kv   2:                          llama.block_count u32              = 32
+llama_model_loader: - kv   3:                       llama.context_length u32              = 8192
+llama_model_loader: - kv   4:                     llama.embedding_length u32              = 4096
+llama_model_loader: - kv   5:                  llama.feed_forward_length u32              = 14336
+llama_model_loader: - kv   6:                 llama.attention.head_count u32              = 32
+llama_model_loader: - kv   7:              llama.attention.head_count_kv u32              = 8
+llama_model_loader: - kv   8:                       llama.rope.freq_base f32              = 500000.000000
+llama_model_loader: - kv   9:     llama.attention.layer_norm_rms_epsilon f32              = 0.000010
+llama_model_loader: - kv  10:                          general.file_type u32              = 7
+llama_model_loader: - kv  11:                           llama.vocab_size u32              = 128256
+llama_model_loader: - kv  12:                 llama.rope.dimension_count u32              = 128
+llama_model_loader: - kv  13:                       tokenizer.ggml.model str              = gpt2
+llama_model_loader: - kv  14:                      tokenizer.ggml.tokens arr[str,128256]  = ["!", "\"", "#", "$", "%", "&", "'", ...
+llama_model_loader: - kv  15:                  tokenizer.ggml.token_type arr[i32,128256]  = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+llama_model_loader: - kv  16:                      tokenizer.ggml.merges arr[str,280147]  = ["Ġ Ġ", "Ġ ĠĠĠ", "ĠĠ ĠĠ", "...
+llama_model_loader: - kv  17:                tokenizer.ggml.bos_token_id u32              = 128000
+llama_model_loader: - kv  18:                tokenizer.ggml.eos_token_id u32              = 128001
+llama_model_loader: - kv  19:                    tokenizer.chat_template str              = {% set loop_messages = messages %}{% ...
+llama_model_loader: - kv  20:               general.quantization_version u32              = 2
+llama_model_loader: - type  f32:   65 tensors
+llama_model_loader: - type q8_0:  226 tensors
+llm_load_vocab: missing pre-tokenizer type, using: 'default'
+llm_load_vocab:                                             
+llm_load_vocab: ************************************        
+llm_load_vocab: GENERATION QUALITY WILL BE DEGRADED!        
+llm_load_vocab: CONSIDER REGENERATING THE MODEL             
+llm_load_vocab: ************************************        
+llm_load_vocab:                                             
+llm_load_vocab: special tokens cache size = 256
+llm_load_vocab: token to piece cache size = 0.8000 MB
+llm_load_print_meta: format           = GGUF V3 (latest)
+llm_load_print_meta: arch             = llama
+llm_load_print_meta: vocab type       = BPE
+llm_load_print_meta: n_vocab          = 128256
+llm_load_print_meta: n_merges         = 280147
+llm_load_print_meta: vocab_only       = 0
+llm_load_print_meta: n_ctx_train      = 8192
+llm_load_print_meta: n_embd           = 4096
+llm_load_print_meta: n_layer          = 32
+llm_load_print_meta: n_head           = 32
+llm_load_print_meta: n_head_kv        = 8
+llm_load_print_meta: n_rot            = 128
+llm_load_print_meta: n_swa            = 0
+llm_load_print_meta: n_embd_head_k    = 128
+llm_load_print_meta: n_embd_head_v    = 128
+llm_load_print_meta: n_gqa            = 4
+llm_load_print_meta: n_embd_k_gqa     = 1024
+llm_load_print_meta: n_embd_v_gqa     = 1024
+llm_load_print_meta: f_norm_eps       = 0.0e+00
+llm_load_print_meta: f_norm_rms_eps   = 1.0e-05
+llm_load_print_meta: f_clamp_kqv      = 0.0e+00
+llm_load_print_meta: f_max_alibi_bias = 0.0e+00
+llm_load_print_meta: f_logit_scale    = 0.0e+00
+llm_load_print_meta: n_ff             = 14336
+llm_load_print_meta: n_expert         = 0
+llm_load_print_meta: n_expert_used    = 0
+llm_load_print_meta: causal attn      = 1
+llm_load_print_meta: pooling type     = 0
+llm_load_print_meta: rope type        = 0
+llm_load_print_meta: rope scaling     = linear
+llm_load_print_meta: freq_base_train  = 500000.0
+llm_load_print_meta: freq_scale_train = 1
+llm_load_print_meta: n_ctx_orig_yarn  = 8192
+llm_load_print_meta: rope_finetuned   = unknown
+llm_load_print_meta: ssm_d_conv       = 0
+llm_load_print_meta: ssm_d_inner      = 0
+llm_load_print_meta: ssm_d_state      = 0
+llm_load_print_meta: ssm_dt_rank      = 0
+llm_load_print_meta: model type       = 8B
+llm_load_print_meta: model ftype      = Q8_0
+llm_load_print_meta: model params     = 8.03 B
+llm_load_print_meta: model size       = 7.95 GiB (8.50 BPW) 
+llm_load_print_meta: general.name     = Meta-Llama-3-8B-Instruct-imatrix
+llm_load_print_meta: BOS token        = 128000 '<|begin_of_text|>'
+llm_load_print_meta: EOS token        = 128001 '<|end_of_text|>'
+llm_load_print_meta: LF token         = 128 'Ä'
+llm_load_print_meta: EOT token        = 128009 '<|eot_id|>'
+llm_load_print_meta: max token length = 256
+ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
+ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
+ggml_cuda_init: found 1 CUDA devices:
+  Device 0: Tesla V100-PCIE-16GB, compute capability 7.0, VMM: yes
+llm_load_tensors: ggml ctx size =    0.27 MiB
+llm_load_tensors: offloading 32 repeating layers to GPU
+llm_load_tensors: offloading non-repeating layers to GPU
+llm_load_tensors: offloaded 33/33 layers to GPU
+llm_load_tensors:        CPU buffer size =   532.31 MiB
+llm_load_tensors:      CUDA0 buffer size =  7605.33 MiB
+.........................................................................................
+llama_new_context_with_model: n_ctx      = 8192
+llama_new_context_with_model: n_batch    = 2048
+llama_new_context_with_model: n_ubatch   = 512
+llama_new_context_with_model: flash_attn = 0
+llama_new_context_with_model: freq_base  = 500000.0
+llama_new_context_with_model: freq_scale = 1
+llama_kv_cache_init:      CUDA0 KV buffer size =  1024.00 MiB
+llama_new_context_with_model: KV self size  = 1024.00 MiB, K (f16):  512.00 MiB, V (f16):  512.00 MiB
+llama_new_context_with_model:  CUDA_Host  output buffer size =     0.49 MiB
+ggml_gallocr_reserve_n: reallocating CUDA0 buffer from size 0.00 MiB to 560.00 MiB
+ggml_gallocr_reserve_n: reallocating CUDA_Host buffer from size 0.00 MiB to 24.01 MiB
+llama_new_context_with_model:      CUDA0 compute buffer size =   560.00 MiB
+llama_new_context_with_model:  CUDA_Host compute buffer size =    24.01 MiB
+llama_new_context_with_model: graph nodes  = 1030
+llama_new_context_with_model: graph splits = 2
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+
+system_info: n_threads = 16 / 16 | AVX = 1 | AVX_VNNI = 0 | AVX2 = 1 | AVX512 = 0 | AVX512_VBMI = 0 | AVX512_VNNI = 0 | AVX512_BF16 = 0 | FMA = 1 | NEON = 0 | SVE = 0 | ARM_FMA = 0 | F16C = 1 | FP16_VA = 0 | WASM_SIMD = 0 | BLAS = 1 | SSE3 = 1 | SSSE3 = 1 | VSX = 0 | MATMUL_INT8 = 0 | LLAMAFILE = 0 | 
+sampling: 
+	repeat_last_n = 64, repeat_penalty = 1.000, frequency_penalty = 0.000, presence_penalty = 0.000
+	top_k = 40, tfs_z = 1.000, top_p = 0.950, min_p = 0.050, typical_p = 1.000, temp = 0.800
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000
+sampling order: 
+CFG -> Penalties -> top_k -> tfs_z -> typical_p -> top_p -> min_p -> temperature 
+generate: n_ctx = 8192, n_batch = 2048, n_predict = 300, n_keep = 0
+
+
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+ggml_backend_cuda_graph_compute: disabling CUDA graphs due to GPU architecture
+
+llama_print_timings:        load time =    2741.61 ms
+llama_print_timings:      sample time =     682.18 ms /   300 runs   (    2.27 ms per token,   439.77 tokens per second)
+llama_print_timings: prompt eval time =      37.41 ms /    10 tokens (    3.74 ms per token,   267.31 tokens per second)
+llama_print_timings:        eval time =    8593.26 ms /   299 runs   (   28.74 ms per token,    34.79 tokens per second)
+llama_print_timings:       total time =    9748.54 ms /   309 tokens
+Log end
+==14461== Profiling application: ./LlamaBuildDebug/bin/llama-cli -m ./models/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q8_0.gguf -p What is there to do in Seattle, Washington? -n 300 -e -ngl 33 -t 16
+==14461== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   56.94%  2.91974s     67283  43.394us  7.6470us  630.68us  void mul_mat_vec_q<ggml_type=8, int=1>(void const *, void const *, float*, int, int, int, int)
+                   28.65%  1.46900s      1494  983.27us     640ns  148.20ms  [CUDA memcpy HtoD]
+                    2.49%  127.64ms     19136  6.6700us  4.0950us  9.9520us  volta_h884gemm_64x64_ldg8_tn
+                    2.41%  123.40ms     67504  1.8280us  1.5990us  3.9370us  quantize_q8_1(float const *, void*, long, long)
+                    1.52%  77.796ms     29197  2.6640us  2.3030us  4.3190us  void k_bin_bcast<__operator_&__(_INTERNAL_37a766fe_11_binbcast_cu_6840010b::op_mul(float, float)), float, float, float>(float const *, float const *, float*, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int)
+                    1.23%  62.993ms     19565  3.2190us  2.8800us  4.8960us  void rms_norm_f32<int=1024>(float const *, float*, int, float)
+                    1.10%  56.576ms     19264  2.9360us  2.0790us  4.2250us  void k_bin_bcast<__operator_&__(_INTERNAL_37a766fe_11_binbcast_cu_6840010b::op_add(float, float)), float, float, float>(float const *, float const *, float*, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int)
+                    0.87%  44.780ms     19264  2.3240us  2.2710us  4.9280us  void cpy_f32_f16<__operator_&__(_INTERNAL_1f1adace_6_cpy_cu_bfba63e2::cpy_1_f32_f16(char const *, char*))>(char const *, char*, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int)
+                    0.73%  37.454ms     19264  1.9440us  1.5670us  4.1930us  void rope_norm<float, bool=0>(float const *, float*, int, int, int const *, float, int, float, float, rope_corr_dims, float, float const *)
+                    0.60%  30.797ms     19264  1.5980us  1.5350us  3.9360us  k_compute_batched_ptrs(__half const *, __half const *, char*, void const **, void**, long, long, long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, long, long)
+                    0.58%  29.873ms     19264  1.5500us  1.3760us  3.8720us  void convert_unary<float, __half>(void const *, __half*, long)
+                    0.53%  27.344ms     19264  1.4190us  1.3750us  3.9670us  void convert_unary<__half, float>(void const *, float*, long)
+                    0.46%  23.521ms      9632  2.4410us  2.3990us  6.5920us  void cpy_f32_f16<__operator_&__(_INTERNAL_1f1adace_6_cpy_cu_bfba63e2::cpy_1_f32_f32(char const *, char*))>(char const *, char*, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int)
+                    0.42%  21.322ms      9632  2.2130us  1.9830us  3.9350us  silu_f32(float const *, float*, int)
+                    0.38%  19.310ms       221  87.375us  17.024us  168.25us  void mul_mat_q<ggml_type=8, int=16, int=8, bool=0>(char const *, char const *, float*, float*, int, int, int, int, int, int, int)
+                    0.32%  16.508ms      5792  2.8500us  2.5600us  3.4560us  void soft_max_f32<bool=1, int=0, int=0, float>(float const *, float const *, float*, int, int, float, float, float, float, unsigned int)
+                    0.27%  13.920ms       301  46.245us  40.480us  72.479us  [CUDA memcpy DtoH]
+                    0.19%  9.5175ms       221  43.065us  8.2880us  84.671us  void mul_mat_vec_q<ggml_type=8, int=2>(void const *, void const *, float*, int, int, int, int)
+                    0.05%  2.6787ms      1024  2.6150us  2.5600us  2.8800us  void soft_max_f32<bool=1, int=256, int=256, float>(float const *, float const *, float*, int, int, float, float, float, float, unsigned int)
+                    0.05%  2.4035ms      1024  2.3470us  2.3030us  2.8160us  void soft_max_f32<bool=1, int=128, int=128, float>(float const *, float const *, float*, int, int, float, float, float, float, unsigned int)
+                    0.05%  2.3976ms         2  1.1988ms  1.1961ms  1.2015ms  [CUDA memset]
+                    0.05%  2.3602ms      1024  2.3040us  2.2710us  2.6560us  void soft_max_f32<bool=1, int=64, int=64, float>(float const *, float const *, float*, int, int, float, float, float, float, unsigned int)
+                    0.03%  1.7774ms       221  8.0420us  5.5670us  13.184us  void mul_mat_q_stream_k_fixup<ggml_type=8, int=16, int=8, bool=0>(float*, float const *, int, int, int, int, int)
+                    0.03%  1.4937ms       602  2.4810us  2.0160us  2.8800us  void k_get_rows_float<float, float>(float const *, int const *, float*, long, long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long)
+                    0.03%  1.4622ms       768  1.9030us  1.8550us  3.2000us  void soft_max_f32<bool=1, int=32, int=32, float>(float const *, float const *, float*, int, int, float, float, float, float, unsigned int)
+                    0.01%  564.89us        64  8.8260us  5.6960us  12.096us  void gemmSN_TN_kernel_half<int=256, int=8, int=2, int=4, int=5, cublasGemvTensorBatched<__half const >, cublasGemvTensorBatched<__half const >, cublasGemvTensorBatched<__half>>(cublasGemmSmallNParams<__half const , cublasGemvTensorBatched<__half const >, cublasGemvTensorBatched<__half const >, __half>)
+                    0.01%  454.27us       221  2.0550us  1.8550us  2.5280us  void quantize_mmq_q8_1<mmq_q8_1_ds_layout=0>(float const *, void*, long, long, long)
+                    0.01%  288.16us        64  4.5020us  3.8400us  6.4960us  void gemmSN_TN_kernel_half<int=256, int=8, int=2, int=4, int=2, cublasGemvTensorBatched<__half const >, cublasGemvTensorBatched<__half const >, cublasGemvTensorBatched<__half>>(cublasGemmSmallNParams<__half const , cublasGemvTensorBatched<__half const >, cublasGemvTensorBatched<__half const >, __half>)
+      API calls:   48.81%  3.50923s    348779  10.061us  3.9860us  25.583ms  cudaLaunchKernel
+                   21.96%  1.57865s      2699  584.90us  1.3370us  29.590ms  cudaStreamSynchronize
+                   20.43%  1.46866s      1795  818.19us  3.6750us  148.14ms  cudaMemcpyAsync
+                    2.48%  178.02ms    397019     448ns     137ns  20.009ms  cudaGetLastError
+                    2.43%  174.68ms    282261     618ns     268ns  15.008ms  cudaGetDevice
+                    1.79%  128.56ms         1  128.56ms  128.56ms  128.56ms  cudaMemGetInfo
+                    0.49%  35.033ms         8  4.3792ms  12.673us  18.380ms  cudaFree
+                    0.42%  30.403ms       337  90.216us     140ns  28.430ms  cuDeviceGetAttribute
+                    0.27%  19.557ms         8  2.4446ms     529ns  19.542ms  cudaOccupancyMaxActiveBlocksPerMultiprocessorWithFlags
+                    0.27%  19.172ms        26  737.39us     426ns  10.284ms  cudaFuncSetAttribute
+                    0.25%  17.878ms         2  8.9391ms  490.56us  17.388ms  cudaFreeHost
+                    0.19%  13.439ms         6  2.2398ms  4.9920us  10.356ms  cudaMalloc
+                    0.17%  11.918ms         2  5.9591ms  916.97us  11.001ms  cudaMallocHost
+                    0.03%  2.4528ms         8  306.60us  1.7900us  1.2062ms  cudaDeviceSynchronize
+                    0.00%  227.19us       766     296ns     160ns  2.2810us  cuGetProcAddress
+                    0.00%  190.04us         1  190.04us  190.04us  190.04us  cuMemCreate
+                    0.00%  169.65us       180     942ns     487ns  7.6720us  cudaOccupancyMaxActiveBlocksPerMultiprocessor
+                    0.00%  159.25us         1  159.25us  159.25us  159.25us  cudaGetSymbolAddress
+                    0.00%  157.64us         1  157.64us  157.64us  157.64us  cudaGetDeviceProperties
+                    0.00%  90.210us         1  90.210us  90.210us  90.210us  cuMemUnmap
+                    0.00%  88.870us         1  88.870us  88.870us  88.870us  cuMemSetAccess
+                    0.00%  75.284us         2  37.642us  18.102us  57.182us  cudaMemset
+                    0.00%  54.956us         4  13.739us  9.0740us  19.634us  cuDeviceGetName
+                    0.00%  24.574us        18  1.3650us     497ns  10.478us  cudaEventCreateWithFlags
+                    0.00%  23.897us         1  23.897us  23.897us  23.897us  cudaStreamCreateWithFlags
+                    0.00%  19.543us         1  19.543us  19.543us  19.543us  cudaStreamDestroy
+                    0.00%  18.296us         1  18.296us  18.296us  18.296us  cuMemAddressReserve
+                    0.00%  16.446us        18     913ns     427ns  6.6750us  cudaEventDestroy
+                    0.00%  10.719us         1  10.719us  10.719us  10.719us  cuMemAddressFree
+                    0.00%  7.9090us        16     494ns     290ns  1.9330us  cudaDeviceGetAttribute
+                    0.00%  5.9610us         1  5.9610us  5.9610us  5.9610us  cuDeviceGetPCIBusId
+                    0.00%  4.2830us         1  4.2830us  4.2830us  4.2830us  cuMemMap
+                    0.00%  3.1910us         1  3.1910us  3.1910us  3.1910us  cudaGetDeviceCount
+                    0.00%  3.1110us         2  1.5550us     508ns  2.6030us  cuInit
+                    0.00%  3.0800us         1  3.0800us  3.0800us  3.0800us  cuMemGetAllocationGranularity
+                    0.00%  1.9820us         5     396ns     189ns     942ns  cuDeviceGetCount
+                    0.00%  1.8480us         2     924ns     589ns  1.2590us  cudaGetDriverEntryPoint
+                    0.00%  1.8050us         6     300ns     176ns     524ns  cuDeviceGet
+                    0.00%  1.3840us         3     461ns     385ns     551ns  cuDeviceTotalMem
+                    0.00%  1.2160us         3     405ns     219ns     777ns  cuModuleGetLoadingMode
+                    0.00%     928ns         3     309ns     227ns     472ns  cuDeviceGetUuid
+                    0.00%     475ns         2     237ns     234ns     241ns  cuDriverGetVersion
+                    0.00%     443ns         1     443ns     443ns     443ns  cuMemRelease

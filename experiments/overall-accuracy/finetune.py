@@ -79,31 +79,42 @@ def finetune(model_name, device, dataset_name, is_baseline=False, n_epochs=5, ba
         dataset = load_dataset('winogrande', 'winogrande_debiased')
         format_prompt = format_prompts_winogrande
     elif dataset_name == 'alpaca':
+        #Download the dataset from HuggingFace website
         dataset = load_dataset('tatsu-lab/alpaca')
+        #Loads the prompts and answers into a list
         format_prompt = format_prompts_alpaca
     else:
         raise NotImplementedError
 
+    #Loads in the configs for a model's class in the CPU
     ref_model = AutoModelForCausalLM.from_pretrained(model_name, device_map='cpu')
+    #Loads correct tokenizer class according to model
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
     sparse_pattern = 'bigbird'
+    #Sets configurations for attention and scarsity
     config = get_opt_exposer_lora_attn_config(model_name, sparse_config=sparse_pattern)
+
+    #Creates model with or without sparsity attention
     if is_baseline:
         model = opt_peft_lora.OPTForCausalLM(config)
     else:
         model = opt_exposer_lora_attn.OPTForCausalLM(config)
 
+    #Marks certain LORA parameters to be trainable in model
     mark_only_lora_as_trainable(model, 'lora_only')
     if hasattr(config, 'sparsity_config'):
         del config.sparsity_config  # remove this since SparsityConfig is not JSON serializable
 
+    #Copies values for each key that is in ref_model and model
     load_initial_weights(model, ref_model)
 
+    #Offload model to GPU
     model.to(device)
 
     model_name = model_name.split('/')[-1]
 
+    #Create collator for grabbing prompts
     response_template = '### Response:'
     collator = DataCollatorForCompletionOnlyLM(response_template=response_template, tokenizer=tokenizer, pad_to_multiple_of=16)
 
@@ -113,6 +124,7 @@ def finetune(model_name, device, dataset_name, is_baseline=False, n_epochs=5, ba
     else:
         output_dir_suffix += f'-{sparse_pattern}'
 
+    #Set training parameters (HuggingFace)
     training_args = TrainingArguments(
         output_dir=model_name + output_dir_suffix,
         num_train_epochs=n_epochs,
@@ -126,6 +138,7 @@ def finetune(model_name, device, dataset_name, is_baseline=False, n_epochs=5, ba
         logging_steps=100,
     )
 
+    #Create trainer class (TRL)
     trainer = SFTTrainer(
         model,
         # peft_config=peft_config,
@@ -137,6 +150,8 @@ def finetune(model_name, device, dataset_name, is_baseline=False, n_epochs=5, ba
         tokenizer=tokenizer,
         max_seq_length=1024,
     )
+
+    #Set the module to training mode
     trainer.train()
 
 

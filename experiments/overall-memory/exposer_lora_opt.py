@@ -21,8 +21,8 @@ parser.add_argument('--seq_len', type=int, default=512, help='number of tokens t
 parser.add_argument('--lora_dim', type=int, default=4, help='lora attn dimension')
 parser.add_argument('--lora_alpha', type=int, default=32, help='lora attn alpha')
 parser.add_argument('--sparsity_config', type=str, default='bigbird', choices=['bigbird', 'longformer', 'fixed', 'variable', 'local'], help='sparsity config')
-parser.add_argument('--mlp_block_size', type=int, default=128, help='mlp block size')
-parser.add_argument('--mlp_threshold', type=float, default=0.80, help='mlp threshold')
+#parser.add_argument('--mlp_block_size', type=int, default=128, help='mlp block size')
+#parser.add_argument('--mlp_threshold', type=float, default=0.80, help='mlp threshold')
 
 
 if __name__ == '__main__':

@@ -21,8 +21,8 @@ parser.add_argument('--batch_size', type=int, default=8, help='batch size')
 parser.add_argument('--seq_len', type=int, default=512, help='number of tokens to predict')
 parser.add_argument('--lora_dim', type=int, default=4, help='lora attn dimension')
 parser.add_argument('--lora_alpha', type=int, default=32, help='lora attn alpha')
-parser.add_argument('--mlp_block_size', type=int, default=128, help='mlp block size')
-parser.add_argument('--mlp_threshold', type=float, default=0.80, help='mlp threshold')
+#parser.add_argument('--mlp_block_size', type=int, default=128, help='mlp block size')
+#parser.add_argument('--mlp_threshold', type=float, default=0.80, help='mlp threshold')
 
 
 if __name__ == '__main__':
@@ -95,4 +95,4 @@ if __name__ == '__main__':
             break
         if batch_idx >= warmup:
             total_time += all_start.elapsed_time(all_end)
-    print('average time:', total_time / repitition)
+    print(f'--Average time: {total_time / repitition} ms, --file_name: {os.path.basename(__file__)}, --model: {args.model_name}, --batch size: {args.batch_size}, --sequence length: {args.seq_len}, --data: {args.data}, --device: {args.device}')

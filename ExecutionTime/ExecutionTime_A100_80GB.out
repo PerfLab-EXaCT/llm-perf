@@ -1,0 +1,44 @@
+Gathering average execution times for systems. 
+
+
+A100 GPT2 137M 512. 
+
+--Average time: 36.5614282989502 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_bitfit.py
+--Average time: 38.737674179077146 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_adapter.py
+--Average time: 49.972265090942386 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_full.py
+--Average time: 45.41962226867676 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_lora.py
+--Average time: 43.32496894836426 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: exposer_bitfit.py
+--Average time: 49.140695037841795 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: exposer_adapter.py
+--Average time: 53.07631622314453 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: exposer_lora.py
+
+A100 GPT2 137M 1024. 
+
+--Average time: 64.28252197265626 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: exposer_bitfit.py
+--Average time: 65.91363082885742 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: exposer_adapter.py
+--Average time: 72.79069152832031 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: exposer_lora.py
+--Average time: 83.75642044067382 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_adapter.py
+--Average time: 84.43459564208985 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_bitfit.py
+--Average time: 93.62601989746094 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_lora.py
+--Average time: 104.23584762573242 ms, --model: openai-community/gpt2, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_full.py
+
+A100 GPT2-XL 1.61B 512. 
+
+--Average time: 233.72761169433593 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: exposer_bitfit.py
+--Average time: 259.9316925048828 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_bitfit.py
+--Average time: 266.20946411132815 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_adapter.py
+--Average time: 246.88310180664064 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: exposer_adapter.py
+--Average time: 318.14029418945313 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_lora.py
+--Average time: 292.7499676513672 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: exposer_lora.py
+--Average time: 393.0740319824219 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 512, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_full.py
+
+A100 GPT2-XL 1.61B 1024. 
+
+--Average time: 397.1401300048828 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: exposer_bitfit.py
+--Average time: 408.4702392578125 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: exposer_adapter.py
+--Average time: 473.2673040771484 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: exposer_lora.py
+--Average time: 628.8532104492188 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_bitfit.py
+--Average time: 633.6707775878906 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_adapter.py
+--Average time: 710.0751062011718 ms, --model: openai-community/gpt2-xl, --batch size: 4, --sequence length: 1024, --data: dataset/train_gpt.jsonl, --device: cuda, --file_name: torch_lora.py
+
+Gathering average execution times complete.
+

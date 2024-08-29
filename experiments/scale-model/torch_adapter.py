@@ -83,4 +83,4 @@ if __name__ == '__main__':
         if batch_idx >= warmup:
             total_time += all_start.elapsed_time(all_end)
 
-    print('average time:', total_time / repitition)
+    print(f'--Average time: {total_time / repitition} ms, --file_name: {os.path.basename(__file__)}, --model: {args.model_name}, --batch size: {args.batch_size}, --sequence length: {args.seq_len}, --data: {args.data}, --device: {args.device}')

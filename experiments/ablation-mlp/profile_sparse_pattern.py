@@ -35,13 +35,13 @@ if __name__ == '__main__':
         if k in model.state_dict():
             model.state_dict()[k].copy_(v)
         else:
-            print('skip', k)
+            ('skip', k)
     model.to(args.device)
-    print('model name:', model_name)
+    ('model name:', model_name)
 
     dataset = FT_Dataset(args.data, args.batch_size, args.seq_len)
     dataloader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=0)
-    print('data length:', len(dataloader))
+    ('data length:', len(dataloader))
 
     model.eval()
     with torch.autocast(device_type=args.device, dtype=torch.float16):

@@ -79,7 +79,6 @@ if __name__ == '__main__':
     optimizer_step = torch.cuda.Event(enable_timing=True)
     scheduler_step = torch.cuda.Event(enable_timing=True)
     
-    
     for batch_idx, data in enumerate(valid_loader):
         all_start.record()
 

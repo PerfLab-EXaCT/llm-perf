@@ -1,3 +1,4 @@
+import time
 import argparse
 import os
 
@@ -8,11 +9,11 @@ from torch.utils.data import DataLoader
 from exposer.models.opt_peft_lora import OPTForCausalLM
 from exposer.utils.config_utils import get_opt_lora_config
 
-from exposer.models.gpt_peft_lora import GPT2LMHeadModel
-from exposer.utils.config_utils import get_gpt2_lora_config
+from exposer.models.gpt_bare import GPT2LMHeadModel
+from exposer.utils.config_utils import get_gpt2_config
 
 from exposer.utils.data_utils import FT_Dataset
-from exposer.utils.peft_utils import mark_only_lora_as_trainable
+from exposer.utils.peft_utils import mark_only_bias_as_trainable
 
 
 parser = argparse.ArgumentParser(description='Attn block sparse')
@@ -23,15 +24,13 @@ parser.add_argument('--init_checkpoint', type=str, help='initial checkpoint')
 parser.add_argument('--data', type=str, help='location of the data corpus')
 parser.add_argument('--batch_size', type=int, default=8, help='batch size')
 parser.add_argument('--seq_len', type=int, default=512, help='number of tokens to predict')
-parser.add_argument('--lora_dim', type=int, default=4, help='lora attn dimension')
-parser.add_argument('--lora_alpha', type=int, default=32, help='lora attn alpha')
 
 
 if __name__ == '__main__':
     args = parser.parse_args()
     torch.manual_seed(args.seed)
 
-    config = get_gpt2_lora_config(args.model_name, args.lora_dim, args.lora_alpha)
+    config = get_gpt2_config(args.model_name)
     n_layers, n_heads = config.num_hidden_layers, config.num_attention_heads
 
     model = GPT2LMHeadModel(config).to(args.device)
@@ -40,8 +39,7 @@ if __name__ == '__main__':
     optimizer = AdamW(model.parameters(), lr=1e-4, weight_decay=0.1)
     scheduler = lr_scheduler.LambdaLR(optimizer, lambda step: min(step / 4000, 1.0))
 
-    if args.lora_dim > 0:
-        mark_only_lora_as_trainable(model)
+    mark_only_bias_as_trainable(model)
 
     valid_data = FT_Dataset(args.data, args.batch_size, args.seq_len)
     valid_loader = DataLoader(valid_data, 
@@ -75,6 +73,6 @@ if __name__ == '__main__':
             break
 
     max_memory = torch.cuda.max_memory_allocated()
-    print('{{"test_case": "LoRA", "max_memory_{}": {}}}'.format(args.seq_len, max_memory / 1024 ** 3))
+    print('{{"test_case": "BitFit", "max_memory_{}": {}}}'.format(args.seq_len, max_memory / 1024 ** 3))
 
 

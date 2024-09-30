@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import torch
 import torch.nn as nn
@@ -6,6 +7,10 @@ from torch.utils.data import DataLoader
 
 from exposer.models.opt_bare import OPTForCausalLM
 from exposer.utils.config_utils import get_opt_config
+
+from exposer.models.gpt_bare import GPT2LMHeadModel
+from exposer.utils.config_utils import get_gpt2_config
+
 from exposer.utils.data_utils import FT_Dataset
 
 
@@ -23,46 +28,45 @@ if __name__ == '__main__':
     args = parser.parse_args()
     torch.manual_seed(args.seed)
 
-    config = get_opt_config(args.model_name)
+    config = get_gpt2_config(args.model_name)
     n_layers, n_heads = config.num_hidden_layers, config.num_attention_heads
 
-    model = OPTForCausalLM(config).to(args.device)
+    model = GPT2LMHeadModel(config).to(args.device)
 
     from torch.optim import AdamW, lr_scheduler
     optimizer = AdamW(model.parameters(), lr=1e-4, weight_decay=0.1)
     scheduler = lr_scheduler.LambdaLR(optimizer, lambda step: min(step / 4000, 1.0))
 
-    for seq_len in [128, 256, 512, 1024, 2048, 4096]:
-        valid_data = FT_Dataset(args.data, args.batch_size, seq_len)
-        valid_loader = DataLoader(valid_data, 
-                                batch_size=args.batch_size, 
-                                num_workers=0, 
-                                shuffle=False, 
-                                pin_memory=True, 
-                                drop_last=False)
-        
-        model.train()
-        with torch.autocast(device_type=args.device, dtype=torch.float16):
-            for batch_idx, data in enumerate(valid_loader):
-                data = {key: value for key, value in data.items()}
-                _input = data['input'].to(args.device)
-                _target = data['target'].to(args.device)
-                _msk = data['mask'].to(args.device)
-                _batch, _len = _input.shape
-                _lm_logits = model(_input).logits
+    valid_data = FT_Dataset(args.data, args.batch_size, args.seq_len)
+    valid_loader = DataLoader(valid_data, 
+                            batch_size=args.batch_size, 
+                            num_workers=0, 
+                            shuffle=False, 
+                            pin_memory=True, 
+                            drop_last=False)
+    
+    model.train()
+    with torch.autocast(device_type=args.device, dtype=torch.float16):
+        for batch_idx, data in enumerate(valid_loader):
+            data = {key: value for key, value in data.items()}
+            _input = data['input'].to(args.device)
+            _target = data['target'].to(args.device)
+            _msk = data['mask'].to(args.device)
+            _batch, _len = _input.shape
+            _lm_logits = model(_input).logits
 
-                loss_fct = nn.CrossEntropyLoss(ignore_index=-1, reduction='none', label_smoothing=0.1)
-                loss = loss_fct(_lm_logits.view(-1, _lm_logits.size(-1)), _target.view(-1)).view(_batch, _len)
-                loss = loss * _msk
-                loss = loss.sum() / (_msk.sum() + 0.0001)
-                # print('loss:', loss)
+            loss_fct = nn.CrossEntropyLoss(ignore_index=-1, reduction='none', label_smoothing=0.1)
+            loss = loss_fct(_lm_logits.view(-1, _lm_logits.size(-1)), _target.view(-1)).view(_batch, _len)
+            loss = loss * _msk
+            loss = loss.sum() / (_msk.sum() + 0.0001)
+            # print('loss:', loss)
 
-                loss.backward()
-                optimizer.step()
-                scheduler.step()
-                model.zero_grad()
+            loss.backward()
+            optimizer.step()
+            scheduler.step()
+            model.zero_grad()
 
-                break
+            break
 
-        max_memory = torch.cuda.max_memory_allocated()
-        print('{{"test_case": "Full Parameter", "max_memory_{}": {}}}'.format(seq_len, max_memory / 1024 ** 3))
+    max_memory = torch.cuda.max_memory_allocated()
+    print('{{"test_case": "Full Parameter", "max_memory_{}": {}}}'.format(args.seq_len, max_memory / 1024 ** 3))

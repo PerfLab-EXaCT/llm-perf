@@ -990,7 +990,7 @@ class Trainer:
                 dataset=self.train_dataset,
                 lengths=lengths,
                 model_input_name=model_input_name,
-                shuffle=self.args.no_shuffle_group_by_length, #?
+                no_shuffle=self.args.no_shuffle_group_by_length, #?
             )
 
         else:
@@ -1069,7 +1069,7 @@ class Trainer:
                 dataset=eval_dataset,
                 lengths=lengths,
                 model_input_name=model_input_name,
-                shuffle=self.args.no_shuffle_group_by_length, #?
+                no_shuffle=self.args.no_shuffle_group_by_length, #?
             )
 
         if self.args.world_size <= 1:
@@ -2473,7 +2473,7 @@ class Trainer:
 
         for epoch in range(epochs_trained, num_train_epochs): #?Goes through each epoch
 
-            print('\n\033[92m' + 'Epoch ' +  str(epoch) + '\033[0m') #?
+            print('\nEpoch ' +  str(epoch)) #?
 
             epoch_dataloader = train_dataloader
             if hasattr(epoch_dataloader, "set_epoch"):
@@ -2522,13 +2522,22 @@ class Trainer:
                     #? Padding Counting Function
                     for number, sequence in enumerate(inputs['input_ids']): #?Goes through each sequence in the batch
 
-                        no_padding_inputs = sequence[sequence != 0]
-                        length_no_padding_inputs = len(sequence) - (sequence == 0).sum().item() #Length of sequence - number of zeros
+                        #no_padding_inputs = sequence[sequence != 0]
+                        no_padding_inputs = inputs['input_ids'][number][inputs['input_ids'][number] != self.processing_class.pad_token_id]
+                        length_no_padding_inputs = len(sequence) - (sequence == self.processing_class.pad_token_id).sum().item() #Length of sequence - number of zeros
 
-                        test = inputs['attention_mask'][number][inputs['attention_mask'][number] != 0]
+                        test = inputs['attention_mask'][number][inputs['attention_mask'][number] == 1]
                     
-                        if len(no_padding_inputs) != length_no_padding_inputs or len(test) != length_no_padding_inputs:
+                        if len(no_padding_inputs) != length_no_padding_inputs:
                             raise RuntimeError("Padding calculations incorrect")
+                        
+                        # print(inputs['input_ids'][number])
+                        # print(inputs['attention_mask'][number])
+
+                        if len(test) != len(no_padding_inputs):
+                            print(len(test))
+                            print(length_no_padding_inputs)
+                            raise RuntimeError("Attention mask calculations incorrect")
 
                         # Append sequence lengths and zero padding
                         total_nonzero_tokens += length_no_padding_inputs
@@ -2665,10 +2674,10 @@ class Trainer:
 
             #?Metrics for zero padding
             total_zero_padding = total_num_tokens - total_nonzero_tokens
-            print('\n\033[92m' + f"Epoch {epoch} Padding Metrics" + '\033[0m')
+            print(f"Epoch {epoch} Padding Metrics")
             print("Total number of zero padding vs real tokens: " + str(total_zero_padding) + " : " + str(total_nonzero_tokens))
             print("Percentage of zero padding in epoch: " + str((total_zero_padding / total_num_tokens) * 100) + "%")
-            print("Average number of zero padding per sequence: " + str(total_zero_padding / total_num_sequences) + "\n")
+            print("Average number of zero padding per sequence: " + str(total_zero_padding / total_num_sequences))
             #?End Metrics
 
             if step < 0:

@@ -183,16 +183,16 @@ class TrainerUtilsTest(unittest.TestCase):
     def test_group_by_length(self):
         # Get some inputs of random lengths
         lengths = torch.randint(0, 25, (100,)).tolist()
-        print(f"\nOriginal Length List\n{lengths}")
+        print(f"\nOriginal order of lengths\n{lengths}")
 
         # Put one bigger than the others to check it ends up in first position
         lengths[5] = 50
         lengths[32] = 40
-        print(f"\nLength List with Max Length\n{lengths}")
+        print(f"\nLength List with included max lengths\n{lengths}")
 
         #Get indices of sorted length list
         print("\nIndices of sorted length list")
-        test_NoShuffle = False
+        test_NoShuffle = True
         indices = list(LengthGroupedSampler(4, lengths=lengths, shuffle=test_NoShuffle)) #!List of lengths is passed in
         #?Length of list = 100
         #?Batch size = 4
@@ -202,7 +202,7 @@ class TrainerUtilsTest(unittest.TestCase):
         print(indices)
 
         #Print out the length list with the sorted indices
-        print("\nResult of LengthGroupedSampler")
+        print("\nResult order of lengths from LengthGroupedSampler")
         result = []
         for index in indices:
             result.append(lengths[index])

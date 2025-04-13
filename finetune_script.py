@@ -1,6 +1,5 @@
 #? This script is used to fine-tune a model on the CodeComplexity dataset
 import argparse
-#from copy import deepcopy
 import torch
 import numpy as np
 np.float_ = np.float64
@@ -22,22 +21,17 @@ from TransformerLibrary.src.transformers import (
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_ckpt", type=str, default="openai-community/gpt2")
-    #parser.add_argument("--model_ckpt", type=str, default="codeparrot/codeparrot-small")
-    parser.add_argument("--num_epochs", type=int, default=1) #
-    parser.add_argument("--batch_size", type=int, default=8) #
-    parser.add_argument("--gradient_accumulation_steps", type=int, default=1) #
-    parser.add_argument("--learning_rate", type=float, default=5e-4) #
-    parser.add_argument("--seed", type=int, default=0) #
-    parser.add_argument("--lr_scheduler_type", type=str, default="cosine") #
-    parser.add_argument("--num_warmup_steps", type=int, default=10)
-    parser.add_argument("--weight_decay", type=float, default=0.01) #
-    parser.add_argument("--output_dir", type=str, default="./results")
-    parser.add_argument('--device', type=str, default='cuda:0')
-    parser.add_argument('--no_shuffle', action="store_true", help="Turn off shuffling during group_by_length")
+    parser.add_argument("--num_epochs", type=int, default=1) 
+    parser.add_argument("--batch_size", type=int, default=8) 
+    parser.add_argument("--learning_rate", type=float, default=2e-4) #?5e-4
+    parser.add_argument("--lr_scheduler_type", type=str, default="cosine") #? linear?
+    parser.add_argument("--output_dir", type=str, default="./results") 
+    parser.add_argument('--no_shuffle', action="store_true", help="Turn off shuffling and megabatches during group_by_length")
     return parser.parse_args()
 
 #Used to compute accuracy of the model
 metric = load("accuracy")
+
 def compute_metrics(eval_pred):
     predictions, labels = eval_pred
     predictions = np.argmax(predictions, axis=1)
@@ -45,7 +39,7 @@ def compute_metrics(eval_pred):
 
 def main():
     args = get_args()
-    set_seed(args.seed)
+    set_seed(0) #? Consider changing
 
     #Load and split dataset into training, testing, and validation
     dataset = load_dataset("codeparrot/codecomplex", split="train")
@@ -65,18 +59,15 @@ def main():
     model = AutoModelForSequenceClassification.from_pretrained(args.model_ckpt, num_labels=7)
     model.config.pad_token_id = model.config.eos_token_id
 
-    # print(tokenizer.special_tokens_map, " MAP")
-    # print(tokenizer.pad_token_id, " PAD")  # Check if 0 is the padding token ID
-
     #Offload model to GPU
-    model.to(args.device)
+    model.to('cuda:0')
 
     #Create labels for training
     labels = ClassLabel(num_classes=7, names=list(set(train_test_validation["train"]["complexity"])))
 
     #Tokenize data (should stay the same)
     def tokenize(example):
-        inputs = tokenizer(example["src"], truncation=True, max_length=1024)
+        inputs = tokenizer(example["src"], truncation=True) #, max_length=1024
         label = labels.str2int(example["complexity"])
         return {
             "input_ids": inputs["input_ids"],
@@ -95,23 +86,24 @@ def main():
 
     #We want TrainingArguments and Deepspeed arguments to match
     training_args = TrainingArguments(
+        #optim="adamw_torch",
         output_dir=args.output_dir,
         learning_rate=args.learning_rate,
         lr_scheduler_type=args.lr_scheduler_type,
         eval_strategy="epoch",
-        #eval_steps=0.5,
-        save_strategy="no", #? You need to set this to "epoch" to output the model
+        save_strategy="no", 
         logging_strategy="no",
-        #logging_steps=0.5,
         per_device_train_batch_size=args.batch_size,
         per_device_eval_batch_size=args.batch_size,
         num_train_epochs=args.num_epochs,
-        gradient_accumulation_steps=args.gradient_accumulation_steps,
+        gradient_accumulation_steps=1,
         weight_decay=0.01,
+        torch_compile=True,
+        fp16=True,
         metric_for_best_model="accuracy",
         run_name="complexity-java",
         report_to="none",
-        deepspeed="/people/hoan163/project/ZeroPadding/ds_config.json",
+        deepspeed="/people/hoan163/project/ds_config.json",
         group_by_length=True,
         no_shuffle_group_by_length=args.no_shuffle, #! New Parameter
         #do_train=False #? Set this to True to actually train the model
@@ -145,7 +137,6 @@ def main():
         def on_train_begin(self, args, state, control, **kwargs):
             print("\nTraining Begins\n")
             start.record()
-            #return super().on_train_begin(args, state, control, **kwargs)
         
         def on_train_end(self, args, state, control, **kwargs):
             end.record()
@@ -158,7 +149,6 @@ def main():
         #After evaluation phase
         def on_evaluate(self, args, state, control, **kwargs):
             print("Evaluation complete")
-            #return super().on_evaluate(args, state, control, **kwargs)
 
     trainer.add_callback(CustomCallback(trainer))
     print("Model: ", args.model_ckpt)

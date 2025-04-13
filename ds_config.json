@@ -1,0 +1,36 @@
+{
+    "train_batch_size": "auto",
+    "train_micro_batch_size_per_gpu": "auto",
+    "gradient_accumulation_steps": "auto",
+
+    "data_efficiency": {
+        "seed": 0
+    },
+    
+    "data_sampling":{
+        "num_epochs": 3
+    },
+
+    "optimizer": {
+        "type": "AdamW",
+        "params": {
+            "lr": "auto",
+            "weight_decay": "auto"
+        }
+    },
+
+    "zero_optimization": {
+        "stage": 0
+    },
+
+    "scheduler": {
+         "type": "WarmupCosineLR",
+         "params": {
+             "total_num_steps": "auto",
+             "warmup_num_steps": "auto"
+         }
+    },
+
+    "note": "To add data offloading or no?"
+}
+

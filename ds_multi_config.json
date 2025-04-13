@@ -1,0 +1,31 @@
+{
+    "train_batch_size": "auto",
+    "train_micro_batch_size_per_gpu": "auto",
+    "gradient_accumulation_steps": "auto",
+    "gradient_clipping": "auto",
+
+    "zero_optimization": {
+        "stage": 1
+    },
+
+    "optimizer": {
+        "type": "AdamW",
+        "params": {
+            "lr": "auto",
+            "betas": "auto",
+            "eps": "auto",
+            "weight_decay": "auto"
+        }
+    },
+
+    "scheduler": {
+         "type": "WarmupCosineLR",
+         "params": {
+             "total_num_steps": "auto",
+             "warmup_num_steps": "auto"
+         }
+    },
+
+    "note": "Add --num_gpus=4 to the command line"
+}
+

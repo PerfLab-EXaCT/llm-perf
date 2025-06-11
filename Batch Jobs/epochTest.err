@@ -1,0 +1,91 @@
+Now you should run one of the following depending on your shell
+source /share/apps/python/miniconda24.4.0/etc/profile.d/conda.sh
+source /share/apps/python/miniconda24.4.0/etc/profile.d/conda.csh
+Some weights of GPT2ForSequenceClassification were not initialized from the model checkpoint at codeparrot/codeparrot-small and are newly initialized: ['score.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+/people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/cuda/__init__.py:235: UserWarning: 
+NVIDIA H100 80GB HBM3 with CUDA capability sm_90 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_35 sm_50 sm_60 sm_61 sm_70 sm_75 sm_80 sm_86 sm_89 compute_89.
+If you want to use the NVIDIA H100 80GB HBM3 GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(
+Map:   0%|          | 0/3613 [00:00<?, ? examples/s]Map:  28%|██▊       | 1000/3613 [00:01<00:03, 713.76 examples/s]Map:  55%|█████▌    | 2000/3613 [00:02<00:02, 703.42 examples/s]Map:  83%|████████▎ | 3000/3613 [00:04<00:00, 696.14 examples/s]Map: 100%|██████████| 3613/3613 [00:05<00:00, 693.88 examples/s]Map: 100%|██████████| 3613/3613 [00:05<00:00, 675.77 examples/s]
+Map:   0%|          | 0/452 [00:00<?, ? examples/s]Map: 100%|██████████| 452/452 [00:00<00:00, 637.01 examples/s]Map: 100%|██████████| 452/452 [00:00<00:00, 606.91 examples/s]
+Map:   0%|          | 0/452 [00:00<?, ? examples/s]Map: 100%|██████████| 452/452 [00:00<00:00, 658.47 examples/s]Map: 100%|██████████| 452/452 [00:00<00:00, 625.41 examples/s]
+/people/hoan163/project/finetune_script.py:125: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+Detected kernel version 3.10.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+[h100-04:75006] shmem: mmap: an error occurred while determining whether or not /tmp/ompi.h100-04.327098/jf.0/4285988864/shared_mem_cuda_pool.h100-04 could be created.
+[h100-04:75006] create_and_attach: unable to create shared memory BTL coordinating structure :: size 134217728 
+Using /qfs/people/hoan163/.cache/torch_extensions/py310_cu118 as PyTorch extensions root...
+Detected CUDA files, patching ldflags
+Emitting ninja build file /qfs/people/hoan163/.cache/torch_extensions/py310_cu118/fused_adam/build.ninja...
+/people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/utils/cpp_extension.py:1964: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. 
+If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
+  warnings.warn(
+Building extension module fused_adam...
+Allowing ninja to set a default number of workers... (overridable by setting the environment variable MAX_JOBS=N)
+Loading extension module fused_adam...
+  0%|          | 0/14464 [00:00<?, ?it/s][rank0]: Traceback (most recent call last):
+[rank0]:   File "/people/hoan163/project/finetune_script.py", line 176, in <module>
+[rank0]:     main()
+[rank0]:   File "/people/hoan163/project/finetune_script.py", line 168, in main
+[rank0]:     trainer.train() #Train model
+[rank0]:   File "/qfs/people/hoan163/project/TransformerLibrary/src/transformers/trainer.py", line 2247, in train
+[rank0]:     return inner_training_loop(
+[rank0]:   File "/qfs/people/hoan163/project/TransformerLibrary/src/transformers/trainer.py", line 2465, in _inner_training_loop
+[rank0]:     self.control = self.callback_handler.on_train_begin(args, self.state, self.control)
+[rank0]:   File "/qfs/people/hoan163/project/TransformerLibrary/src/transformers/trainer_callback.py", line 506, in on_train_begin
+[rank0]:     return self.call_event("on_train_begin", args, state, control)
+[rank0]:   File "/qfs/people/hoan163/project/TransformerLibrary/src/transformers/trainer_callback.py", line 556, in call_event
+[rank0]:     result = getattr(callback, event)(
+[rank0]:   File "/people/hoan163/project/finetune_script.py", line 150, in on_train_begin
+[rank0]:     print(f"\nTraining Begins for {args.model_ckpt}\n")
+[rank0]: AttributeError: 'TrainingArguments' object has no attribute 'model_ckpt'
+  0%|          | 0/14464 [00:00<?, ?it/s]
+[rank0]:[W404 01:14:58.231451836 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+srun: error: h100-04: task 0: Exited with exit code 1
+Some weights of GPT2ForSequenceClassification were not initialized from the model checkpoint at codeparrot/codeparrot-small and are newly initialized: ['score.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+/people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/cuda/__init__.py:235: UserWarning: 
+NVIDIA H100 80GB HBM3 with CUDA capability sm_90 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_35 sm_50 sm_60 sm_61 sm_70 sm_75 sm_80 sm_86 sm_89 compute_89.
+If you want to use the NVIDIA H100 80GB HBM3 GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(
+Map:   0%|          | 0/3613 [00:00<?, ? examples/s]Map:  28%|██▊       | 1000/3613 [00:01<00:03, 724.95 examples/s]Map:  55%|█████▌    | 2000/3613 [00:02<00:02, 704.71 examples/s]Map:  83%|████████▎ | 3000/3613 [00:04<00:00, 696.41 examples/s]Map: 100%|██████████| 3613/3613 [00:05<00:00, 693.14 examples/s]Map: 100%|██████████| 3613/3613 [00:05<00:00, 671.19 examples/s]
+Map:   0%|          | 0/452 [00:00<?, ? examples/s]Map: 100%|██████████| 452/452 [00:00<00:00, 635.48 examples/s]Map: 100%|██████████| 452/452 [00:00<00:00, 605.65 examples/s]
+Map:   0%|          | 0/452 [00:00<?, ? examples/s]Map: 100%|██████████| 452/452 [00:00<00:00, 655.65 examples/s]Map: 100%|██████████| 452/452 [00:00<00:00, 624.36 examples/s]
+/people/hoan163/project/finetune_script.py:125: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+Detected kernel version 3.10.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+[h100-04:75412] shmem: mmap: an error occurred while determining whether or not /tmp/ompi.h100-04.327098/jf.0/3988127744/shared_mem_cuda_pool.h100-04 could be created.
+[h100-04:75412] create_and_attach: unable to create shared memory BTL coordinating structure :: size 134217728 
+Using /qfs/people/hoan163/.cache/torch_extensions/py310_cu118 as PyTorch extensions root...
+Detected CUDA files, patching ldflags
+Emitting ninja build file /qfs/people/hoan163/.cache/torch_extensions/py310_cu118/fused_adam/build.ninja...
+/people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/utils/cpp_extension.py:1964: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. 
+If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
+  warnings.warn(
+Building extension module fused_adam...
+Allowing ninja to set a default number of workers... (overridable by setting the environment variable MAX_JOBS=N)
+Loading extension module fused_adam...
+  0%|          | 0/14464 [00:00<?, ?it/s][rank0]: Traceback (most recent call last):
+[rank0]:   File "/people/hoan163/project/finetune_script.py", line 176, in <module>
+[rank0]:     main()
+[rank0]:   File "/people/hoan163/project/finetune_script.py", line 168, in main
+[rank0]:     trainer.train() #Train model
+[rank0]:   File "/qfs/people/hoan163/project/TransformerLibrary/src/transformers/trainer.py", line 2247, in train
+[rank0]:     return inner_training_loop(
+[rank0]:   File "/qfs/people/hoan163/project/TransformerLibrary/src/transformers/trainer.py", line 2465, in _inner_training_loop
+[rank0]:     self.control = self.callback_handler.on_train_begin(args, self.state, self.control)
+[rank0]:   File "/qfs/people/hoan163/project/TransformerLibrary/src/transformers/trainer_callback.py", line 506, in on_train_begin
+[rank0]:     return self.call_event("on_train_begin", args, state, control)
+[rank0]:   File "/qfs/people/hoan163/project/TransformerLibrary/src/transformers/trainer_callback.py", line 556, in call_event
+[rank0]:     result = getattr(callback, event)(
+[rank0]:   File "/people/hoan163/project/finetune_script.py", line 150, in on_train_begin
+[rank0]:     print(f"\nTraining Begins for {args.model_ckpt}\n")
+[rank0]: AttributeError: 'TrainingArguments' object has no attribute 'model_ckpt'
+  0%|          | 0/14464 [00:00<?, ?it/s]
+[rank0]:[W404 01:15:25.863907701 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+srun: error: h100-04: task 0: Exited with exit code 1

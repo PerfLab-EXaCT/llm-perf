@@ -2251,6 +2251,7 @@ class Trainer:
                 ignore_keys_for_eval=ignore_keys_for_eval,
             )
 
+    # @profile #!PROFILING
     def _inner_training_loop(
         self, batch_size=None, args=None, resume_from_checkpoint=None, trial=None, ignore_keys_for_eval=None
     ):
@@ -2468,8 +2469,8 @@ class Trainer:
             self._evaluate(trial, ignore_keys_for_eval, skip_scheduler=True)
 
         #? BEGIN EPOCH TRAINING LOOP
-        total_num_sequences = num_examples
-        total_num_tokens = self.num_tokens(train_dataloader) #?Includes zero padding
+        # total_num_sequences = num_examples
+        # total_num_tokens = self.num_tokens(train_dataloader) #?Includes zero padding
 
         for epoch in range(epochs_trained, num_train_epochs): #?Goes through each epoch
 
@@ -2519,29 +2520,29 @@ class Trainer:
                 batch_samples, num_items_in_batch = self.get_batch_samples(epoch_iterator, num_batches, args.device)
                 for i, inputs in enumerate(batch_samples):
 
-                    #? Padding Counting Function
-                    for number, sequence in enumerate(inputs['input_ids']): #?Goes through each sequence in the batch
+                    # #? Padding Counting Function
+                    # for number, sequence in enumerate(inputs['input_ids']): #?Goes through each sequence in the batch
 
-                        #no_padding_inputs = sequence[sequence != 0]
-                        no_padding_inputs = inputs['input_ids'][number][inputs['input_ids'][number] != self.processing_class.pad_token_id]
-                        length_no_padding_inputs = len(sequence) - (sequence == self.processing_class.pad_token_id).sum().item() #Length of sequence - number of zeros
+                    #     #no_padding_inputs = sequence[sequence != 0]
+                    #     no_padding_inputs = inputs['input_ids'][number][inputs['input_ids'][number] != self.processing_class.pad_token_id]
+                    #     length_no_padding_inputs = len(sequence) - (sequence == self.processing_class.pad_token_id).sum().item() #Length of sequence - number of zeros
 
-                        test = inputs['attention_mask'][number][inputs['attention_mask'][number] == 1]
+                    #     test = inputs['attention_mask'][number][inputs['attention_mask'][number] == 1] #valid tokens
                     
-                        if len(no_padding_inputs) != length_no_padding_inputs:
-                            raise RuntimeError("Padding calculations incorrect")
+                    #     if len(no_padding_inputs) != length_no_padding_inputs:
+                    #         raise RuntimeError("Padding calculations incorrect")
                         
-                        # print(inputs['input_ids'][number])
-                        # print(inputs['attention_mask'][number])
+                    #     # print(inputs['input_ids'][number])
+                    #     # print(inputs['attention_mask'][number])
 
-                        if len(test) != len(no_padding_inputs):
-                            print(len(test))
-                            print(length_no_padding_inputs)
-                            raise RuntimeError("Attention mask calculations incorrect")
+                    #     if len(test) != len(no_padding_inputs):
+                    #         print(len(test))
+                    #         print(length_no_padding_inputs)
+                    #         raise RuntimeError("Attention mask calculations incorrect")
 
-                        # Append sequence lengths and zero padding
-                        total_nonzero_tokens += length_no_padding_inputs
-                    #? End Function
+                    #     # Append sequence lengths and zero padding
+                    #     total_nonzero_tokens += length_no_padding_inputs
+                    # #? End Function
 
                     step += 1
                     do_sync_step = (step + 1) % args.gradient_accumulation_steps == 0 or (step + 1) == steps_in_epoch
@@ -2672,13 +2673,13 @@ class Trainer:
                         xm.mark_step()
                     break
 
-            #?Metrics for zero padding
-            total_zero_padding = total_num_tokens - total_nonzero_tokens
-            print(f"Epoch {epoch} Padding Metrics")
-            print("Total number of zero padding vs real tokens: " + str(total_zero_padding) + " : " + str(total_nonzero_tokens))
-            print("Percentage of zero padding in epoch: " + str((total_zero_padding / total_num_tokens) * 100) + "%")
-            print("Average number of zero padding per sequence: " + str(total_zero_padding / total_num_sequences))
-            #?End Metrics
+            # #?Metrics for zero padding
+            # total_zero_padding = total_num_tokens - total_nonzero_tokens
+            # print(f"Epoch {epoch} Padding Metrics")
+            # print("Total number of zero padding vs real tokens: " + str(total_zero_padding) + " : " + str(total_nonzero_tokens))
+            # print("Percentage of zero padding in epoch: " + str((total_zero_padding / total_num_tokens) * 100) + "%")
+            # print("Average number of zero padding per sequence: " + str(total_zero_padding / total_num_sequences))
+            # #?End Metrics
 
             if step < 0:
                 logger.warning(
@@ -3731,6 +3732,7 @@ class Trainer:
 
         return ctx_manager
 
+    # @profile #!PROFILING
     def training_step(
         self, model: nn.Module, inputs: dict[str, Union[torch.Tensor, Any]], num_items_in_batch=None
     ) -> torch.Tensor:
@@ -5283,6 +5285,7 @@ class Trainer:
                 num_items_in_batch = self.accelerator.gather(num_items_in_batch).sum()
 
             if torch.is_tensor(num_items_in_batch):
+                # print("num_items_in_batch: " + str(num_items_in_batch)) #!REMOVE
                 num_items_in_batch = num_items_in_batch.to(device)
 
         return batch_samples, num_items_in_batch

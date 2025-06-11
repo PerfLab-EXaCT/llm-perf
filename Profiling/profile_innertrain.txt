@@ -1,0 +1,558 @@
+[2025-06-10 12:57:17,613] [INFO] [real_accelerator.py:219:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+Model:  openai-community/gpt2
+LengthGroupedSampler with Smart Batching: False
+ninja: no work to do.
+Time to load fused_adam op: 1.3787410259246826 seconds
+[2025-06-10 12:57:23,282] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+
+Epoch 0
+Indices Grouped
+
+Epoch 1
+Indices Grouped
+
+Epoch 2
+Indices Grouped
+
+Epoch 3
+Indices Grouped
+
+Epoch 4
+Indices Grouped
+{'train_runtime': 107.4718, 'train_samples_per_second': 168.091, 'train_steps_per_second': 21.029, 'train_loss': 1.0453161729120575, 'epoch': 5.0}
+
+Training Complete
+Total Runtime: 107.57196875 seconds
+
+Final Test
+LengthGroupedSampler with Smart Batching: False
+Indices Grouped
+Evaluation complete
+{'eval_loss': 0.5703125, 'eval_accuracy': 0.7986725663716814, 'eval_runtime': 0.8722, 'eval_samples_per_second': 518.23, 'eval_steps_per_second': 65.352, 'epoch': 5.0}
+Wrote profile results to single_finetune.py.lprof
+Timer unit: 1 s
+
+Total time: 112.921 s
+File: /qfs/people/hoan163/project/TransformerLibrary/src/transformers/trainer.py
+Function: _inner_training_loop at line 2254
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+  2254                                               @profile #!PROFILING
+  2255                                               def _inner_training_loop(
+  2256                                                   self, batch_size=None, args=None, resume_from_checkpoint=None, trial=None, ignore_keys_for_eval=None
+  2257                                               ):
+  2258         1          0.1      0.1      0.1          self.accelerator.free_memory()
+  2259         1          0.0      0.0      0.0          self._train_batch_size = batch_size
+  2260         1          0.0      0.0      0.0          if self.args.auto_find_batch_size:
+  2261                                                       if self.state.train_batch_size != self._train_batch_size:
+  2262                                                           from accelerate.utils import release_memory
+  2263                                           
+  2264                                                           (self.model_wrapped,) = release_memory(self.model_wrapped)
+  2265                                                           self.model_wrapped = self.model
+  2266                                           
+  2267                                                           # Check for DeepSpeed *after* the initial pass and modify the config
+  2268                                                           if self.is_deepspeed_enabled:
+  2269                                                               # Temporarily unset `self.args.train_batch_size`
+  2270                                                               original_bs = self.args.per_device_train_batch_size
+  2271                                                               self.args.per_device_train_batch_size = self._train_batch_size // max(1, self.args.n_gpu)
+  2272                                                               self.propagate_args_to_deepspeed(True)
+  2273                                                               self.args.per_device_train_batch_size = original_bs
+  2274                                                       self.state.train_batch_size = self._train_batch_size
+  2275         1          0.0      0.0      0.0          logger.debug(f"Currently training with a batch size of: {self._train_batch_size}")
+  2276                                                   # Data loader and number of training steps
+  2277         1          1.5      1.5      1.3          train_dataloader = self.get_train_dataloader()
+  2278         1          0.0      0.0      0.0          if self.is_fsdp_xla_v2_enabled:
+  2279                                                       train_dataloader = tpu_spmd_dataloader(train_dataloader)
+  2280                                           
+  2281                                                   # Setting up training control variables:
+  2282                                                   # number of training epochs: num_train_epochs
+  2283                                                   # number of training steps per epoch: num_update_steps_per_epoch
+  2284                                                   # total number of training steps to execute: max_steps
+  2285         1          0.0      0.0      0.0          total_train_batch_size = self._train_batch_size * args.gradient_accumulation_steps * args.world_size
+  2286         1          0.0      0.0      0.0          (
+  2287         1          0.0      0.0      0.0              num_train_epochs,
+  2288         1          0.0      0.0      0.0              num_update_steps_per_epoch,
+  2289         1          0.0      0.0      0.0              num_examples,
+  2290         1          0.0      0.0      0.0              num_train_samples,
+  2291         1          0.0      0.0      0.0              epoch_based,
+  2292         1          0.0      0.0      0.0              len_dataloader,
+  2293         1          0.0      0.0      0.0              max_steps,
+  2294         1          0.0      0.0      0.0          ) = self.set_initial_training_values(args, train_dataloader, total_train_batch_size)
+  2295                                           
+  2296         1          0.0      0.0      0.0          num_train_tokens = None
+  2297         1          0.0      0.0      0.0          if self.args.include_tokens_per_second:
+  2298                                                       num_train_tokens = self.num_tokens(train_dataloader, None if epoch_based else max_steps)
+  2299                                                       # If going by epochs, multiply tokens linearly
+  2300                                                       if len_dataloader is not None and epoch_based:
+  2301                                                           num_train_tokens *= args.num_train_epochs
+  2302                                                       # Otherwise since its steps, we just multiply by grad accum
+  2303                                                       else:
+  2304                                                           num_train_tokens *= args.gradient_accumulation_steps
+  2305                                           
+  2306         1          0.0      0.0      0.0          if DebugOption.UNDERFLOW_OVERFLOW in self.args.debug:
+  2307                                                       if self.args.n_gpu > 1:
+  2308                                                           # nn.DataParallel(model) replicates the model, creating new variables and module
+  2309                                                           # references registered here no longer work on other gpus, breaking the module
+  2310                                                           raise ValueError(
+  2311                                                               "Currently --debug underflow_overflow is not supported under DP. Please use DDP"
+  2312                                                               " (torchrun or torch.distributed.launch (deprecated))."
+  2313                                                           )
+  2314                                                       else:
+  2315                                                           debug_overflow = DebugUnderflowOverflow(self.model)  # noqa
+  2316                                           
+  2317         1          0.0      0.0      0.0          delay_optimizer_creation = is_sagemaker_mp_enabled() or self.is_fsdp_xla_enabled or self.is_fsdp_enabled
+  2318                                           
+  2319                                                   # We need to reset the scheduler, as its parameters may be different on subsequent calls
+  2320         1          0.0      0.0      0.0          if self._created_lr_scheduler:
+  2321                                                       self.lr_scheduler = None
+  2322                                                       self._created_lr_scheduler = False
+  2323                                           
+  2324         1          0.0      0.0      0.0          if self.is_deepspeed_enabled:
+  2325         1          0.0      0.0      0.0              self.optimizer, self.lr_scheduler = deepspeed_init(self, num_training_steps=max_steps)
+  2326                                           
+  2327         1          0.0      0.0      0.0          if not delay_optimizer_creation:
+  2328         1          0.0      0.0      0.0              self.create_optimizer_and_scheduler(num_training_steps=max_steps)
+  2329                                           
+  2330         2          0.0      0.0      0.0          self.state = TrainerState(
+  2331         2          0.0      0.0      0.0              stateful_callbacks=[
+  2332         1          0.0      0.0      0.0                  cb for cb in self.callback_handler.callbacks + [self.control] if isinstance(cb, ExportableState)
+  2333                                                       ]
+  2334                                                   )
+  2335         1          0.0      0.0      0.0          self.state.is_hyper_param_search = trial is not None
+  2336         1          0.0      0.0      0.0          self.state.train_batch_size = self._train_batch_size
+  2337                                           
+  2338                                                   # Compute absolute values for logging, eval, and save if given as ratio
+  2339         1          0.0      0.0      0.0          self.state.compute_steps(args, max_steps)
+  2340                                           
+  2341                                                   # Activate gradient checkpointing if needed
+  2342         1          0.0      0.0      0.0          if args.gradient_checkpointing:
+  2343                                                       self.model.gradient_checkpointing_enable(gradient_checkpointing_kwargs=args.gradient_checkpointing_kwargs)
+  2344                                           
+  2345         1          0.0      0.0      0.0          model = self._wrap_model(self.model_wrapped)
+  2346                                           
+  2347                                                   # as the model is wrapped, don't use `accelerator.prepare`
+  2348                                                   # this is for unhandled cases such as
+  2349                                                   # FSDP-XLA, SageMaker MP/DP, DataParallel, IPEX
+  2350         1          0.0      0.0      0.0          use_accelerator_prepare = True if model is self.model else False
+  2351                                           
+  2352         1          0.0      0.0      0.0          if use_accelerator_prepare and self.is_fsdp_enabled:
+  2353                                                       # In case of auto_find_batch_size=True
+  2354                                                       # Remove FSDP wrapping from sub-models.
+  2355                                                       self.model = unwrap_model(self.model, recursive=True)
+  2356                                           
+  2357         1          0.0      0.0      0.0          if delay_optimizer_creation:
+  2358                                                       if use_accelerator_prepare:
+  2359                                                           # configure fsdp plugin for qlora if any
+  2360                                                           self._fsdp_qlora_plugin_updates()
+  2361                                                           if self.accelerator.mixed_precision != "fp8":
+  2362                                                               self.model = self.accelerator.prepare(self.model)
+  2363                                                       self.create_optimizer_and_scheduler(num_training_steps=max_steps)
+  2364                                           
+  2365                                                   # prepare using `accelerator` prepare
+  2366         1          0.0      0.0      0.0          if use_accelerator_prepare:
+  2367         1          0.0      0.0      0.0              self.model.train()
+  2368         1          0.0      0.0      0.0              if hasattr(self.lr_scheduler, "step"):
+  2369                                                           if self.use_apex:
+  2370                                                               model = self.accelerator.prepare(self.model)
+  2371                                                           else:
+  2372                                                               model, self.optimizer = self.accelerator.prepare(self.model, self.optimizer)
+  2373                                                       else:
+  2374                                                           # to handle cases wherein we pass "DummyScheduler" such as when it is specified in DeepSpeed config.
+  2375         2          2.7      1.4      2.4                  model, self.optimizer, self.lr_scheduler = self.accelerator.prepare(
+  2376         1          0.0      0.0      0.0                      self.model, self.optimizer, self.lr_scheduler
+  2377                                                           )
+  2378                                                   elif self.args.optim in [OptimizerNames.LOMO, OptimizerNames.ADALOMO]:
+  2379                                                       # In this case we are in DDP + LOMO, which should be supported
+  2380                                                       self.optimizer = self.accelerator.prepare(self.optimizer)
+  2381                                           
+  2382         1          0.0      0.0      0.0          if self.is_fsdp_enabled:
+  2383                                                       self.model = self.model_wrapped = model
+  2384                                           
+  2385                                                   # for the rest of this function `model` is the outside model, whether it was wrapped or not
+  2386         1          0.0      0.0      0.0          if model is not self.model:
+  2387         1          0.0      0.0      0.0              self.model_wrapped = model
+  2388                                           
+  2389                                                   # backward compatibility
+  2390         1          0.0      0.0      0.0          if self.is_deepspeed_enabled:
+  2391         1          0.0      0.0      0.0              self.deepspeed = self.model_wrapped
+  2392                                           
+  2393                                                   # ckpt loading
+  2394         1          0.0      0.0      0.0          if resume_from_checkpoint is not None:
+  2395                                                       if self.is_deepspeed_enabled:
+  2396                                                           deepspeed_load_checkpoint(
+  2397                                                               self.model_wrapped, resume_from_checkpoint, load_module_strict=not _is_peft_model(self.model)
+  2398                                                           )
+  2399                                                       elif is_sagemaker_mp_enabled() or self.is_fsdp_enabled:
+  2400                                                           self._load_from_checkpoint(resume_from_checkpoint, self.model_wrapped)
+  2401                                           
+  2402                                                   # Check if saved optimizer or scheduler states exist
+  2403         1          0.0      0.0      0.0          self._load_optimizer_and_scheduler(resume_from_checkpoint)
+  2404         1          0.0      0.0      0.0          self._load_scaler(resume_from_checkpoint)
+  2405                                           
+  2406                                                   # important: at this point:
+  2407                                                   # self.model         is the Transformers Model
+  2408                                                   # self.model_wrapped is DDP(Transformers Model), Deepspeed(Transformers Model),
+  2409                                                   # FSDP(Transformers Model), Dynamo Optimized Module(Transformers Model) etc.
+  2410                                           
+  2411                                                   # Train!
+  2412         1          0.0      0.0      0.0          logger.info("***** Running training *****")
+  2413         1          0.0      0.0      0.0          logger.info(f"  Num examples = {num_examples:,}")
+  2414         1          0.0      0.0      0.0          logger.info(f"  Num Epochs = {num_train_epochs:,}")
+  2415         1          0.0      0.0      0.0          logger.info(f"  Instantaneous batch size per device = {self.args.per_device_train_batch_size:,}")
+  2416         1          0.0      0.0      0.0          if self.args.per_device_train_batch_size != self._train_batch_size:
+  2417                                                       logger.info(f"  Training with DataParallel so batch size has been adjusted to: {self._train_batch_size:,}")
+  2418         1          0.0      0.0      0.0          logger.info(f"  Total train batch size (w. parallel, distributed & accumulation) = {total_train_batch_size:,}")
+  2419         1          0.0      0.0      0.0          logger.info(f"  Gradient Accumulation steps = {args.gradient_accumulation_steps}")
+  2420         1          0.0      0.0      0.0          logger.info(f"  Total optimization steps = {max_steps:,}")
+  2421         1          0.0      0.0      0.0          logger.info(f"  Number of trainable parameters = {get_model_param_count(model, trainable_only=True):,}")
+  2422                                           
+  2423         1          0.0      0.0      0.0          self.state.epoch = 0
+  2424         1          0.0      0.0      0.0          start_time = time.time()
+  2425         1          0.0      0.0      0.0          epochs_trained = 0
+  2426         1          0.0      0.0      0.0          steps_trained_in_current_epoch = 0
+  2427         1          0.0      0.0      0.0          steps_trained_progress_bar = None
+  2428                                           
+  2429                                                   # Check if continuing training from a checkpoint
+  2430         1          0.0      0.0      0.0          if resume_from_checkpoint is not None and os.path.isfile(
+  2431                                                       os.path.join(resume_from_checkpoint, TRAINER_STATE_NAME)
+  2432                                                   ):
+  2433                                                       self.state = TrainerState.load_from_json(os.path.join(resume_from_checkpoint, TRAINER_STATE_NAME))
+  2434                                                       self.compare_trainer_and_checkpoint_args(self.args, self.state)
+  2435                                                       self._load_callback_state()
+  2436                                                       epochs_trained = int(self.state.global_step // num_update_steps_per_epoch)
+  2437                                                       if not args.ignore_data_skip:
+  2438                                                           steps_trained_in_current_epoch = self.state.global_step % (num_update_steps_per_epoch)
+  2439                                                           steps_trained_in_current_epoch *= args.gradient_accumulation_steps
+  2440                                                       else:
+  2441                                                           steps_trained_in_current_epoch = 0
+  2442                                           
+  2443                                                       logger.info("  Continuing training from checkpoint, will skip to saved global_step")
+  2444                                                       logger.info(f"  Continuing training from epoch {epochs_trained}")
+  2445                                                       logger.info(f"  Continuing training from global step {self.state.global_step}")
+  2446                                                       if not args.ignore_data_skip:
+  2447                                                           logger.info(
+  2448                                                               f"  Will skip the first {epochs_trained} epochs then the first"
+  2449                                                               f" {steps_trained_in_current_epoch} batches in the first epoch."
+  2450                                                           )
+  2451                                           
+  2452                                                   # Update the references
+  2453         4          0.0      0.0      0.0          for attr in ("model", "optimizer", "lr_scheduler"):
+  2454         3          0.0      0.0      0.0              setattr(self.callback_handler, attr, getattr(self, attr))
+  2455         1          0.0      0.0      0.0          self.callback_handler.train_dataloader = train_dataloader
+  2456                                           
+  2457         1          0.0      0.0      0.0          self.state.init_training_references(self, max_steps, num_train_epochs, trial)
+  2458                                           
+  2459                                                   # tr_loss is a tensor to avoid synchronization of TPUs through .item()
+  2460         1          0.0      0.0      0.0          tr_loss = torch.tensor(0.0).to(args.device)
+  2461                                                   # _total_loss_scalar is updated everytime .item() has to be called on tr_loss and stores the sum of all losses
+  2462         1          0.0      0.0      0.0          self._total_loss_scalar = 0.0
+  2463         1          0.0      0.0      0.0          self._globalstep_last_logged = self.state.global_step
+  2464         1          0.0      0.0      0.0          model.zero_grad()
+  2465         1          0.0      0.0      0.0          grad_norm: Optional[float] = None
+  2466         1          0.0      0.0      0.0          self.control = self.callback_handler.on_train_begin(args, self.state, self.control)
+  2467                                           
+  2468         1          0.0      0.0      0.0          if args.eval_on_start:
+  2469                                                       self._evaluate(trial, ignore_keys_for_eval, skip_scheduler=True)
+  2470                                           
+  2471                                                   #? BEGIN EPOCH TRAINING LOOP
+  2472                                                   # total_num_sequences = num_examples
+  2473                                                   # total_num_tokens = self.num_tokens(train_dataloader) #?Includes zero padding
+  2474                                           
+  2475         5          0.0      0.0      0.0          for epoch in range(epochs_trained, num_train_epochs): #?Goes through each epoch
+  2476                                           
+  2477         5          0.0      0.0      0.0              print('\nEpoch ' +  str(epoch)) #?
+  2478                                           
+  2479         5          0.0      0.0      0.0              epoch_dataloader = train_dataloader
+  2480         5          0.0      0.0      0.0              if hasattr(epoch_dataloader, "set_epoch"):
+  2481         5          0.0      0.0      0.0                  epoch_dataloader.set_epoch(epoch)
+  2482                                           
+  2483                                                       # Reset the past mems state at the beginning of each epoch if necessary.
+  2484         5          0.0      0.0      0.0              if args.past_index >= 0:
+  2485                                                           self._past = None
+  2486                                           
+  2487         5          0.0      0.0      0.0              steps_in_epoch = (
+  2488         5          0.0      0.0      0.0                  len(epoch_dataloader)
+  2489         5          0.0      0.0      0.0                  if len_dataloader is not None
+  2490                                                           else args.max_steps * args.gradient_accumulation_steps
+  2491                                                       )
+  2492         5          0.0      0.0      0.0              self.control = self.callback_handler.on_epoch_begin(args, self.state, self.control)
+  2493                                           
+  2494         5          0.0      0.0      0.0              if epoch == epochs_trained and resume_from_checkpoint is not None and steps_trained_in_current_epoch == 0:
+  2495                                                           self._load_rng_state(resume_from_checkpoint)
+  2496                                           
+  2497         5          0.0      0.0      0.0              rng_to_sync = False
+  2498         5          0.0      0.0      0.0              steps_skipped = 0
+  2499         5          0.0      0.0      0.0              if steps_trained_in_current_epoch > 0:
+  2500                                                           epoch_dataloader = skip_first_batches(epoch_dataloader, steps_trained_in_current_epoch)
+  2501                                                           steps_skipped = steps_trained_in_current_epoch
+  2502                                                           steps_trained_in_current_epoch = 0
+  2503                                                           rng_to_sync = True
+  2504                                           
+  2505         5          0.0      0.0      0.0              step = -1
+  2506         5          0.0      0.0      0.0              epoch_iterator = iter(epoch_dataloader)
+  2507                                                       # We chunkify the epoch iterator into gradient accumulation steps `n` batches
+  2508         5          0.0      0.0      0.0              remainder = num_examples % args.gradient_accumulation_steps
+  2509         5          0.0      0.0      0.0              if remainder == 0:
+  2510         5          0.0      0.0      0.0                  remainder = args.gradient_accumulation_steps
+  2511         5          0.0      0.0      0.0              update_step = -1
+  2512         5          0.0      0.0      0.0              total_updates = steps_in_epoch // args.gradient_accumulation_steps + 1
+  2513         5          0.0      0.0      0.0              if args.gradient_accumulation_steps == 1:
+  2514         5          0.0      0.0      0.0                  total_updates -= 1
+  2515                                           
+  2516         5          0.0      0.0      0.0              total_nonzero_tokens = 0 #?
+  2517      2264          0.0      0.0      0.0              for _ in range(total_updates): #?Goes through each update step
+  2518      2260          0.0      0.0      0.0                  update_step += 1
+  2519      2260          0.0      0.0      0.0                  num_batches = args.gradient_accumulation_steps if update_step != (total_updates - 1) else remainder
+  2520      2260         10.8      0.0      9.6                  batch_samples, num_items_in_batch = self.get_batch_samples(epoch_iterator, num_batches, args.device)
+  2521      4519          0.0      0.0      0.0                  for i, inputs in enumerate(batch_samples):
+  2522                                           
+  2523                                                               # #? Padding Counting Function
+  2524                                                               # for number, sequence in enumerate(inputs['input_ids']): #?Goes through each sequence in the batch
+  2525                                           
+  2526                                                               #     #no_padding_inputs = sequence[sequence != 0]
+  2527                                                               #     no_padding_inputs = inputs['input_ids'][number][inputs['input_ids'][number] != self.processing_class.pad_token_id]
+  2528                                                               #     length_no_padding_inputs = len(sequence) - (sequence == self.processing_class.pad_token_id).sum().item() #Length of sequence - number of zeros
+  2529                                           
+  2530                                                               #     test = inputs['attention_mask'][number][inputs['attention_mask'][number] == 1] #valid tokens
+  2531                                                               
+  2532                                                               #     if len(no_padding_inputs) != length_no_padding_inputs:
+  2533                                                               #         raise RuntimeError("Padding calculations incorrect")
+  2534                                                                   
+  2535                                                               #     # print(inputs['input_ids'][number])
+  2536                                                               #     # print(inputs['attention_mask'][number])
+  2537                                           
+  2538                                                               #     if len(test) != len(no_padding_inputs):
+  2539                                                               #         print(len(test))
+  2540                                                               #         print(length_no_padding_inputs)
+  2541                                                               #         raise RuntimeError("Attention mask calculations incorrect")
+  2542                                           
+  2543                                                               #     # Append sequence lengths and zero padding
+  2544                                                               #     total_nonzero_tokens += length_no_padding_inputs
+  2545                                                               # #? End Function
+  2546                                           
+  2547      2260          0.0      0.0      0.0                      step += 1
+  2548      2260          0.0      0.0      0.0                      do_sync_step = (step + 1) % args.gradient_accumulation_steps == 0 or (step + 1) == steps_in_epoch
+  2549                                                               # Since we perform prefetching, we need to manually set sync_gradients
+  2550      2260          0.0      0.0      0.0                      self.accelerator.gradient_state._set_sync_gradients(do_sync_step)
+  2551                                           
+  2552      2260          0.0      0.0      0.0                      if self.args.include_num_input_tokens_seen:
+  2553                                                                   main_input_name = getattr(self.model, "main_input_name", "input_ids")
+  2554                                                                   if main_input_name not in inputs:
+  2555                                                                       logger.warning(
+  2556                                                                           "Tried to track the number of tokens seen, however the current model is "
+  2557                                                                           "not configured properly to know what item is the input. To fix this, add "
+  2558                                                                           "a `main_input_name` attribute to the model class you are using."
+  2559                                                                       )
+  2560                                                                   else:
+  2561                                                                       input_tokens = inputs[main_input_name].numel()
+  2562                                                                       input_tokens = torch.tensor(input_tokens, device=self.args.device, dtype=torch.int64)
+  2563                                                                       self.state.num_input_tokens_seen += (
+  2564                                                                           self.accelerator.gather(input_tokens).sum().cpu().item()
+  2565                                                                       )
+  2566      2260          0.0      0.0      0.0                      if rng_to_sync:
+  2567                                                                   self._load_rng_state(resume_from_checkpoint)
+  2568                                                                   rng_to_sync = False
+  2569                                           
+  2570                                                               # Skip past any already trained steps if resuming training
+  2571      2260          0.0      0.0      0.0                      if steps_trained_in_current_epoch > 0:
+  2572                                                                   steps_trained_in_current_epoch -= 1
+  2573                                                                   if steps_trained_progress_bar is not None:
+  2574                                                                       steps_trained_progress_bar.update(1)
+  2575                                                                   if steps_trained_in_current_epoch == 0:
+  2576                                                                       self._load_rng_state(resume_from_checkpoint)
+  2577                                                                   continue
+  2578      2260          0.0      0.0      0.0                      elif steps_trained_progress_bar is not None:
+  2579                                                                   steps_trained_progress_bar.close()
+  2580                                                                   steps_trained_progress_bar = None
+  2581                                           
+  2582      2260          0.0      0.0      0.0                      if step % args.gradient_accumulation_steps == 0:
+  2583      2260          0.0      0.0      0.0                          self.control = self.callback_handler.on_step_begin(args, self.state, self.control)
+  2584                                           
+  2585                                                               # We explicitly want to avoid relying on `accelerator.accumulate` for generation training
+  2586      2260          0.0      0.0      0.0                      context = (
+  2587                                                                   functools.partial(self.accelerator.no_sync, model=model)
+  2588      2260          0.0      0.0      0.0                          if i != len(batch_samples) - 1
+  2589                                                                   and self.accelerator.distributed_type != DistributedType.DEEPSPEED
+  2590      2260          0.0      0.0      0.0                          else contextlib.nullcontext
+  2591                                                               )
+  2592      4520          0.0      0.0      0.0                      with context():
+  2593      2260         92.5      0.0     81.9                          tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+  2594                                           
+  2595      9040          0.1      0.0      0.1                      if (
+  2596      2260          0.0      0.0      0.0                          args.logging_nan_inf_filter
+  2597      2260          0.0      0.0      0.0                          and not is_torch_xla_available()
+  2598      4520          0.1      0.0      0.1                          and (torch.isnan(tr_loss_step) or torch.isinf(tr_loss_step))
+  2599                                                               ):
+  2600                                                                   # if loss is nan or inf simply add the average of previous logged losses
+  2601                                                                   tr_loss = tr_loss + tr_loss / (1 + self.state.global_step - self._globalstep_last_logged)
+  2602                                                               else:
+  2603      2260          0.0      0.0      0.0                          if tr_loss.device != tr_loss_step.device:
+  2604                                                                       raise ValueError(
+  2605                                                                           f"Calculated loss must be on the original device: {tr_loss.device} but device in use is {tr_loss_step.device}"
+  2606                                                                       )
+  2607      2260          0.0      0.0      0.0                          tr_loss = tr_loss + tr_loss_step
+  2608                                           
+  2609      2260          2.2      0.0      2.0                      self.current_flos += float(self.floating_point_ops(inputs))
+  2610                                           
+  2611      2260          0.0      0.0      0.0                      if do_sync_step:
+  2612                                                                   # Since we perform prefetching, we need to manually set sync_gradients to True
+  2613      2260          0.0      0.0      0.0                          self.accelerator.gradient_state._set_sync_gradients(True)
+  2614                                           
+  2615                                                                   # Gradient clipping
+  2616      2260          0.0      0.0      0.0                          if args.max_grad_norm is not None and args.max_grad_norm > 0:
+  2617      2260          0.0      0.0      0.0                              if is_sagemaker_mp_enabled() and args.fp16:
+  2618                                                                           _grad_norm = self.optimizer.clip_master_grads(args.max_grad_norm)
+  2619      2260          0.0      0.0      0.0                              elif self.use_apex:
+  2620                                                                           # Revert to normal clipping otherwise, handling Apex or full precision
+  2621                                                                           _grad_norm = nn.utils.clip_grad_norm_(
+  2622                                                                               amp.master_params(self.optimizer),
+  2623                                                                               args.max_grad_norm,
+  2624                                                                           )
+  2625                                                                       else:
+  2626      4520          0.0      0.0      0.0                                  _grad_norm = self.accelerator.clip_grad_norm_(
+  2627      2260          0.0      0.0      0.0                                      model.parameters(),
+  2628      2260          0.0      0.0      0.0                                      args.max_grad_norm,
+  2629                                                                           )
+  2630                                           
+  2631      2260          0.0      0.0      0.0                              if (
+  2632      2260          0.1      0.0      0.1                                  is_accelerate_available()
+  2633      2260          0.0      0.0      0.0                                  and self.accelerator.distributed_type == DistributedType.DEEPSPEED
+  2634                                                                       ):
+  2635      2260          0.0      0.0      0.0                                  grad_norm = model.get_global_grad_norm()
+  2636                                                                           # In some cases the grad norm may not return a float
+  2637      2260          0.0      0.0      0.0                                  if hasattr(grad_norm, "item"):
+  2638                                                                               grad_norm = grad_norm.item()
+  2639                                                                       else:
+  2640                                                                           grad_norm = _grad_norm
+  2641                                           
+  2642      2260          0.0      0.0      0.0                          self.control = self.callback_handler.on_pre_optimizer_step(args, self.state, self.control)
+  2643                                           
+  2644      2260          0.0      0.0      0.0                          self.optimizer.step()
+  2645                                           
+  2646      2260          0.0      0.0      0.0                          self.control = self.callback_handler.on_optimizer_step(args, self.state, self.control)
+  2647                                           
+  2648      2260          0.0      0.0      0.0                          if not self.accelerator.optimizer_step_was_skipped:
+  2649                                                                       # Delay optimizer scheduling until metrics are generated
+  2650      2253          0.0      0.0      0.0                              if not isinstance(self.lr_scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
+  2651      2253          0.0      0.0      0.0                                  self.lr_scheduler.step()
+  2652                                           
+  2653      2260          1.2      0.0      1.1                          model.zero_grad()
+  2654      2260          0.0      0.0      0.0                          self.state.global_step += 1
+  2655      2260          0.0      0.0      0.0                          self.state.epoch = epoch + (step + 1 + steps_skipped) / steps_in_epoch
+  2656      2260          0.2      0.0      0.2                          self.control = self.callback_handler.on_step_end(args, self.state, self.control)
+  2657      4520          0.0      0.0      0.0                          self._maybe_log_save_evaluate(
+  2658      2260          0.0      0.0      0.0                              tr_loss, grad_norm, model, trial, epoch, ignore_keys_for_eval, start_time
+  2659                                                                   )
+  2660                                                               else:
+  2661                                                                   self.control = self.callback_handler.on_substep_end(args, self.state, self.control)
+  2662                                           
+  2663                                                               # PyTorch/XLA relies on the data loader to insert the mark_step for
+  2664                                                               # each step. Since we are breaking the loop early, we need to manually
+  2665                                                               # insert the mark_step here.
+  2666      2260          0.0      0.0      0.0                      if self.control.should_epoch_stop or self.control.should_training_stop:
+  2667         1          0.0      0.0      0.0                          if is_torch_xla_available():
+  2668                                                                       xm.mark_step()
+  2669         1          0.0      0.0      0.0                          break
+  2670                                                           # We also need to break out of the nested loop
+  2671      2260          0.0      0.0      0.0                  if self.control.should_epoch_stop or self.control.should_training_stop:
+  2672         1          0.0      0.0      0.0                      if is_torch_xla_available():
+  2673                                                                   xm.mark_step()
+  2674         1          0.0      0.0      0.0                      break
+  2675                                           
+  2676                                                       # #?Metrics for zero padding
+  2677                                                       # total_zero_padding = total_num_tokens - total_nonzero_tokens
+  2678                                                       # print(f"Epoch {epoch} Padding Metrics")
+  2679                                                       # print("Total number of zero padding vs real tokens: " + str(total_zero_padding) + " : " + str(total_nonzero_tokens))
+  2680                                                       # print("Percentage of zero padding in epoch: " + str((total_zero_padding / total_num_tokens) * 100) + "%")
+  2681                                                       # print("Average number of zero padding per sequence: " + str(total_zero_padding / total_num_sequences))
+  2682                                                       # #?End Metrics
+  2683                                           
+  2684         5          0.0      0.0      0.0              if step < 0:
+  2685                                                           logger.warning(
+  2686                                                               "There seems not to be a single sample in your epoch_iterator, stopping training at step"
+  2687                                                               f" {self.state.global_step}! This is expected if you're using an IterableDataset and set"
+  2688                                                               f" num_steps ({max_steps}) higher than the number of available samples."
+  2689                                                           )
+  2690                                                           self.control.should_training_stop = True
+  2691                                           
+  2692         5          0.0      0.0      0.0              self.control = self.callback_handler.on_epoch_end(args, self.state, self.control)
+  2693         5          0.0      0.0      0.0              self._maybe_log_save_evaluate(tr_loss, grad_norm, model, trial, epoch, ignore_keys_for_eval, start_time)
+  2694                                           
+  2695         5          0.0      0.0      0.0              if DebugOption.TPU_METRICS_DEBUG in self.args.debug:
+  2696                                                           if is_torch_xla_available():
+  2697                                                               # tpu-comment: Logging debug metrics for PyTorch/XLA (compile, execute times, ops, etc.)
+  2698                                                               xm.master_print(met.metrics_report())
+  2699                                                           else:
+  2700                                                               logger.warning(
+  2701                                                                   "You enabled PyTorch/XLA debug metrics but you don't have a TPU "
+  2702                                                                   "configured. Check your training configuration if this is unexpected."
+  2703                                                               )
+  2704         5          0.0      0.0      0.0              if self.control.should_training_stop:
+  2705         1          0.0      0.0      0.0                  break
+  2706                                                   #? END EPOCH TRAINING LOOP
+  2707                                           
+  2708         1          0.0      0.0      0.0          if args.past_index and hasattr(self, "_past"):
+  2709                                                       # Clean the state at the end of training
+  2710                                                       delattr(self, "_past")
+  2711                                           
+  2712         1          0.0      0.0      0.0          logger.info("\n\nTraining completed. Do not forget to share your model on huggingface.co/models =)\n\n")
+  2713         1          0.0      0.0      0.0          if args.load_best_model_at_end and self.state.best_model_checkpoint is not None:
+  2714                                                       # Wait for everyone to get here so we are sure the model has been saved by process 0.
+  2715                                                       if is_torch_xla_available():
+  2716                                                           xm.rendezvous("load_best_model_at_end")
+  2717                                                       elif args.parallel_mode == ParallelMode.DISTRIBUTED:
+  2718                                                           dist.barrier()
+  2719                                                       elif is_sagemaker_mp_enabled():
+  2720                                                           smp.barrier()
+  2721                                           
+  2722                                                       self._load_best_model()
+  2723                                           
+  2724                                                   # add remaining tr_loss
+  2725         1          0.0      0.0      0.0          self._total_loss_scalar += tr_loss.item()
+  2726         1          0.0      0.0      0.0          effective_global_step = max(self.state.global_step, 0.001)  # Avoid ZeroDivisionError
+  2727         1          0.0      0.0      0.0          train_loss = self._total_loss_scalar / effective_global_step
+  2728                                           
+  2729         2          0.0      0.0      0.0          metrics = speed_metrics(
+  2730         1          0.0      0.0      0.0              "train",
+  2731         1          0.0      0.0      0.0              start_time,
+  2732         1          0.0      0.0      0.0              num_samples=num_train_samples,
+  2733         1          0.0      0.0      0.0              num_steps=self.state.max_steps,
+  2734         1          0.0      0.0      0.0              num_tokens=num_train_tokens,
+  2735                                                   )
+  2736         1          0.1      0.1      0.1          self.store_flos()
+  2737         1          0.0      0.0      0.0          metrics["total_flos"] = self.state.total_flos
+  2738         1          0.0      0.0      0.0          metrics["train_loss"] = train_loss
+  2739                                           
+  2740         1          0.0      0.0      0.0          self.is_in_train = False
+  2741                                           
+  2742         1          0.0      0.0      0.0          self._memory_tracker.stop_and_update_metrics(metrics)
+  2743                                           
+  2744         1          0.0      0.0      0.0          self.log(metrics)
+  2745                                           
+  2746         1          0.0      0.0      0.0          run_dir = self._get_output_dir(trial)
+  2747         1          0.0      0.0      0.0          checkpoints_sorted = self._sorted_checkpoints(use_mtime=False, output_dir=run_dir)
+  2748                                           
+  2749                                                   # Delete the last checkpoint when save_total_limit=1 if it's different from the best checkpoint and process allowed to save.
+  2750         1          0.0      0.0      0.0          if self.args.should_save and self.state.best_model_checkpoint is not None and self.args.save_total_limit == 1:
+  2751                                                       for checkpoint in checkpoints_sorted:
+  2752                                                           if not os.path.samefile(checkpoint, self.state.best_model_checkpoint):
+  2753                                                               logger.info(f"Deleting older checkpoint [{checkpoint}] due to args.save_total_limit")
+  2754                                                               shutil.rmtree(checkpoint, ignore_errors=True)
+  2755                                           
+  2756         1          1.1      1.1      0.9          self.control = self.callback_handler.on_train_end(args, self.state, self.control)
+  2757                                           
+  2758                                                   # Wait for the checkpoint to be uploaded.
+  2759         1          0.0      0.0      0.0          self._finish_current_push()
+  2760                                           
+  2761                                                   # After training we make sure to retrieve back the original forward pass method
+  2762                                                   # for the embedding layer by removing the forward post hook.
+  2763         1          0.0      0.0      0.0          if self.neftune_noise_alpha is not None:
+  2764                                                       self._deactivate_neftune(self.model)
+  2765                                           
+  2766         1          0.0      0.0      0.0          return TrainOutput(self.state.global_step, train_loss, metrics)
+

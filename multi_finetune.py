@@ -86,7 +86,7 @@ def main():
     #TODO: Random print statements
     #TODO: Every GPU runs the same number of epochs
     #TODO: Without num_gpus, it will run every GPU on system
-    #TODO: What is DistributedLenghthGroupedSampler?
+    #TODO: What is DistributedLenghthGroupedSampler? How is it called? What does it do? Does it affect our SmartBatching?
 
     #This is where dynamic batching happens
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)

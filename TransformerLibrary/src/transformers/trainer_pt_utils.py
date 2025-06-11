@@ -667,54 +667,6 @@ class LengthGroupedSampler(Sampler):
         else:
             indices = get_length_grouped_indices(self.lengths, self.batch_size, generator=self.generator)
             return iter(indices)
-    
-
-# #? New Sampler
-# class NoShuffleLengthGroupedSampler(Sampler):
-#     r"""
-#     Sampler that samples indices in a way that groups together features of the dataset of roughly the same length without shuffling.
-#     This means the same set of indices are returned every epoch.
-#     """
-
-#     def __init__(
-#         self,
-#         batch_size: int,
-#         dataset: Optional[Dataset] = None,
-#         lengths: Optional[list[int]] = None,
-#         model_input_name: Optional[str] = None,
-#         generator=None,
-#     ):
-#         if dataset is None and lengths is None:
-#             raise ValueError("One of dataset and lengths must be provided.")
-
-#         print('\033[92m' + "NoShuffleLengthGroupedSampler created" + '\033[0m')
-#         self.batch_size = batch_size
-#         if lengths is None:
-#             model_input_name = model_input_name if model_input_name is not None else "input_ids"
-#             if (
-#                 not (isinstance(dataset[0], dict) or isinstance(dataset[0], BatchEncoding))
-#                 or model_input_name not in dataset[0]
-#             ):
-#                 raise ValueError(
-#                     "Can only automatically infer lengths for datasets whose items are dictionaries with an "
-#                     f"'{model_input_name}' key."
-#                 )
-#             lengths = [len(feature[model_input_name]) for feature in dataset]
-#         elif isinstance(lengths, torch.Tensor):
-#             logger.info(
-#                 "If lengths is a torch.Tensor, LengthGroupedSampler will be slow. Converting lengths to List[int]..."
-#             )
-#             lengths = lengths.tolist()
-
-#         self.lengths = lengths
-#         self.sorted_indices = sorted(range(len(lengths)), key=lambda idx: lengths[idx], reverse=True) #!NEW
-
-#     def __len__(self):
-#         return len(self.lengths)
-
-#     def __iter__(self):
-#         print("Indices Grouped")
-#         return iter(self.sorted_indices)
 
 
 class DistributedLengthGroupedSampler(DistributedSampler):
@@ -752,6 +704,8 @@ class DistributedLengthGroupedSampler(DistributedSampler):
         self.epoch = 0
         self.drop_last = drop_last
 
+        print("DistributedLengthGroupedSampler called") #?
+
         if lengths is None:
             model_input_name = model_input_name if model_input_name is not None else "input_ids"
             if (
@@ -785,6 +739,9 @@ class DistributedLengthGroupedSampler(DistributedSampler):
         self.seed = seed
 
     def __iter__(self) -> Iterator:
+
+        print("DistributedLengthGroupedSampler iter") #?
+
         # Deterministically shuffle based on epoch and seed
         g = torch.Generator()
         g.manual_seed(self.seed + self.epoch)
@@ -830,11 +787,15 @@ class ShardSampler(Sampler):
 
         self.total_batch_size = total_batch_size = batch_size * num_processes
 
+        print("Shard Sampler called") #?
+
         num_batches = len(dataset) // total_batch_size if drop_last else math.ceil(len(dataset) / total_batch_size)
         self.total_num_samples = num_batches * total_batch_size
 
     def __iter__(self):
         indices = list(range(len(self.dataset)))
+
+        print("Shard Sampler iter") #?
 
         # Add extra samples to make it evenly divisible. While loop is there in the edge case we have a tiny dataset
         # and it needs to be done several times.
@@ -911,6 +872,8 @@ class IterableDatasetShard(IterableDataset):
         self.epoch = 0
         self.num_examples = 0
 
+        print("IterableDatasetShard called") #?
+
     def set_epoch(self, epoch):
         self.epoch = epoch
         if hasattr(self.dataset, "set_epoch"):
@@ -926,6 +889,8 @@ class IterableDatasetShard(IterableDataset):
             self.dataset.generator.manual_seed(self.seed + self.epoch)
         real_batch_size = self.batch_size * self.num_processes
         process_slice = range(self.process_index * self.batch_size, (self.process_index + 1) * self.batch_size)
+
+        print("IterableDatasetShard iter") #?
 
         first_batch = None
         current_batch = []

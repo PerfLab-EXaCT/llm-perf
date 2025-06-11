@@ -1,0 +1,125 @@
+[2025-06-10 12:52:37,325] [INFO] [real_accelerator.py:219:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+Model:  openai-community/gpt2
+LengthGroupedSampler with Smart Batching: False
+ninja: no work to do.
+Time to load fused_adam op: 1.3838188648223877 seconds
+[2025-06-10 12:52:43,018] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+
+Epoch 0
+Indices Grouped
+
+Epoch 1
+Indices Grouped
+
+Epoch 2
+Indices Grouped
+
+Epoch 3
+Indices Grouped
+
+Epoch 4
+Indices Grouped
+{'train_runtime': 105.612, 'train_samples_per_second': 171.051, 'train_steps_per_second': 21.399, 'train_loss': 0.9931964705475663, 'epoch': 5.0}
+
+Training Complete
+Total Runtime: 105.7022265625 seconds
+
+Final Test
+LengthGroupedSampler with Smart Batching: False
+Indices Grouped
+Evaluation complete
+{'eval_loss': 0.55712890625, 'eval_accuracy': 0.8207964601769911, 'eval_runtime': 0.8229, 'eval_samples_per_second': 549.306, 'eval_steps_per_second': 69.271, 'epoch': 5.0}
+Wrote profile results to single_finetune.py.lprof
+Timer unit: 1 s
+
+Total time: 92.1979 s
+File: /qfs/people/hoan163/project/TransformerLibrary/src/transformers/trainer.py
+Function: training_step at line 3735
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+  3735                                               @profile #!PROFILING
+  3736                                               def training_step(
+  3737                                                   self, model: nn.Module, inputs: dict[str, Union[torch.Tensor, Any]], num_items_in_batch=None
+  3738                                               ) -> torch.Tensor:
+  3739                                                   """
+  3740                                                   Perform a training step on a batch of inputs.
+  3741                                           
+  3742                                                   Subclass and override to inject custom behavior.
+  3743                                           
+  3744                                                   Args:
+  3745                                                       model (`nn.Module`):
+  3746                                                           The model to train.
+  3747                                                       inputs (`Dict[str, Union[torch.Tensor, Any]]`):
+  3748                                                           The inputs and targets of the model.
+  3749                                           
+  3750                                                           The dictionary will be unpacked before being fed to the model. Most models expect the targets under the
+  3751                                                           argument `labels`. Check your model's documentation for all accepted arguments.
+  3752                                           
+  3753                                                   Return:
+  3754                                                       `torch.Tensor`: The tensor with training loss on this batch.
+  3755                                                   """
+  3756      2260          1.7      0.0      1.9          model.train()
+  3757      2260          0.0      0.0      0.0          if hasattr(self.optimizer, "train") and callable(self.optimizer.train):
+  3758                                                       self.optimizer.train()
+  3759                                           
+  3760      2260          0.1      0.0      0.1          inputs = self._prepare_inputs(inputs)
+  3761      2260          0.0      0.0      0.0          if is_sagemaker_mp_enabled():
+  3762                                                       loss_mb = smp_forward_backward(model, inputs, self.args.gradient_accumulation_steps)
+  3763                                                       return loss_mb.reduce_mean().detach().to(self.args.device)
+  3764                                           
+  3765      4520          0.0      0.0      0.0          with self.compute_loss_context_manager():
+  3766      2260         16.8      0.0     18.2              loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+  3767                                           
+  3768      2260          0.0      0.0      0.0          del inputs
+  3769                                                   if (
+  3770      2260          0.0      0.0      0.0              self.args.torch_empty_cache_steps is not None
+  3771                                                       and self.state.global_step % self.args.torch_empty_cache_steps == 0
+  3772                                                   ):
+  3773                                                       if is_torch_xpu_available():
+  3774                                                           torch.xpu.empty_cache()
+  3775                                                       elif is_torch_mlu_available():
+  3776                                                           torch.mlu.empty_cache()
+  3777                                                       elif is_torch_musa_available():
+  3778                                                           torch.musa.empty_cache()
+  3779                                                       elif is_torch_npu_available():
+  3780                                                           torch.npu.empty_cache()
+  3781                                                       elif is_torch_mps_available(min_version="2.0"):
+  3782                                                           torch.mps.empty_cache()
+  3783                                                       elif is_torch_hpu_available():
+  3784                                                           logger.warning(
+  3785                                                               "`torch_empty_cache_steps` is set but HPU device/backend does not support empty_cache()."
+  3786                                                           )
+  3787                                                       else:
+  3788                                                           torch.cuda.empty_cache()
+  3789                                           
+  3790      2260          0.0      0.0      0.0          kwargs = {}
+  3791                                           
+  3792                                                   # For LOMO optimizers you need to explicitly use the learnign rate
+  3793      2260          0.0      0.0      0.0          if self.args.optim in [OptimizerNames.LOMO, OptimizerNames.ADALOMO]:
+  3794                                                       kwargs["learning_rate"] = self._get_learning_rate()
+  3795                                           
+  3796      2260          0.0      0.0      0.0          if self.args.n_gpu > 1:
+  3797                                                       loss = loss.mean()  # mean() to average on multi-gpu parallel training
+  3798                                           
+  3799      2260          0.0      0.0      0.0          if self.use_apex:
+  3800                                                       with amp.scale_loss(loss, self.optimizer) as scaled_loss:
+  3801                                                           scaled_loss.backward()
+  3802                                                   else:
+  3803                                                       # Finally we need to normalize the loss for reporting
+  3804      2260          0.0      0.0      0.0              if not self.model_accepts_loss_kwargs and self.compute_loss_func is None:
+  3805      2260          0.1      0.0      0.1                  loss = loss / self.args.gradient_accumulation_steps
+  3806                                           
+  3807                                                       # Turning off loss scaling w.r.t. gradient accumulation when DeepSpeed is enabled
+  3808                                                       # https://github.com/huggingface/transformers/pull/35808
+  3809      2260          0.0      0.0      0.0              if self.accelerator.distributed_type == DistributedType.DEEPSPEED:
+  3810      2260          0.0      0.0      0.0                  kwargs["scale_wrt_gas"] = False
+  3811                                           
+  3812      2260         73.5      0.0     79.7              self.accelerator.backward(loss, **kwargs)
+  3813                                           
+  3814      2260          0.0      0.0      0.0              return loss.detach()
+

@@ -1,0 +1,54 @@
+{
+	"files": [
+		{
+			"path": "TransformerLibrary/src/transformers/training_args.py",
+			"bookmarks": [
+				{
+					"line": 1315,
+					"column": 48,
+					"label": "no shuffle TrainerArguments"
+				}
+			]
+		},
+		{
+			"path": "TransformerLibrary/src/transformers/trainer.py",
+			"bookmarks": [
+				{
+					"line": 2523,
+					"column": 0,
+					"label": "Padding Counter"
+				},
+				{
+					"line": 2676,
+					"column": 0,
+					"label": "Padding Metrics"
+				},
+				{
+					"line": 3698,
+					"column": 0,
+					"label": "Data offloading"
+				}
+			]
+		},
+		{
+			"path": "../.cache/huggingface/accelerate/default_config.yaml",
+			"bookmarks": [
+				{
+					"line": 1,
+					"column": 0,
+					"label": "Accelerate Config"
+				}
+			]
+		},
+		{
+			"path": "TransformerLibrary/src/transformers/tokenization_utils_base.py",
+			"bookmarks": [
+				{
+					"line": 3711,
+					"column": 0,
+					"label": "Padding"
+				}
+			]
+		}
+	]
+}

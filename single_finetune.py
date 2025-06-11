@@ -21,9 +21,9 @@ from TransformerLibrary.src.transformers import (
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_ckpt", type=str, default="openai-community/gpt2")
-    parser.add_argument("--num_epochs", type=int, default=1) 
+    parser.add_argument("--num_epochs", type=int, default=5) 
     parser.add_argument("--batch_size", type=int, default=8) 
-    parser.add_argument("--learning_rate", type=float, default=2e-4) #?5e-4
+    parser.add_argument("--learning_rate", type=float, default=2e-5) 
     parser.add_argument("--lr_scheduler_type", type=str, default="cosine") #? linear?
     parser.add_argument("--output_dir", type=str, default="./results") 
     parser.add_argument('--no_shuffle', action="store_true", help="Turn off shuffling and megabatches during group_by_length")
@@ -41,7 +41,7 @@ def main():
     args = get_args()
     set_seed(0) #? Consider changing
 
-    #Load and split dataset into training, testing, and validation
+    #Load and split dataset into training, testing, and validation to cache
     dataset = load_dataset("codeparrot/codecomplex", split="train")
     train_test = dataset.train_test_split(test_size=0.2)
     test_validation = train_test["test"].train_test_split(test_size=0.5)
@@ -81,7 +81,7 @@ def main():
         remove_columns=train_test_validation["train"].column_names,
     )
 
-    #This is where dynamic batching happens
+    #This class does dynamic batching 
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
     #We want TrainingArguments and Deepspeed arguments to match
@@ -90,7 +90,7 @@ def main():
         output_dir=args.output_dir,
         learning_rate=args.learning_rate,
         lr_scheduler_type=args.lr_scheduler_type,
-        eval_strategy="epoch",
+        eval_strategy="no", #"epoch"
         save_strategy="no", 
         logging_strategy="no",
         per_device_train_batch_size=args.batch_size,
@@ -132,7 +132,7 @@ def main():
         #Function only used if evaluation is done at the end of each epoch
         def on_epoch_end(self, args, state, control, **kwargs):
             if control.should_evaluate: 
-                print("\nBegin evaluation and logging for current epoch")
+                print("\nBegin evaluation for current epoch")
             
         def on_train_begin(self, args, state, control, **kwargs):
             print("\nTraining Begins\n")
@@ -161,4 +161,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

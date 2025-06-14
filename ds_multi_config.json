@@ -24,8 +24,6 @@
              "total_num_steps": "auto",
              "warmup_num_steps": "auto"
          }
-    },
-
-    "note": "Add --num_gpus=4 to the command line"
+    }
 }
 

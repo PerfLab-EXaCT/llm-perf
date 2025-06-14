@@ -21,13 +21,13 @@ from TransformerLibrary.src.transformers import (
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_ckpt", type=str, default="openai-community/gpt2")
-    parser.add_argument("--num_epochs", type=int, default=1) 
+    parser.add_argument("--num_epochs", type=int, default=5) 
     parser.add_argument("--batch_size", type=int, default=8) 
-    parser.add_argument("--learning_rate", type=float, default=2e-4) 
-    parser.add_argument("--lr_scheduler_type", type=str, default="cosine") 
+    parser.add_argument("--learning_rate", type=float, default=2e-5) 
+    parser.add_argument("--lr_scheduler_type", type=str, default="cosine") #? linear?
     parser.add_argument("--output_dir", type=str, default="./Finetune_Results") 
-    parser.add_argument('--no_shuffle', action="store_true", help="Turn off shuffling and megabatches during group_by_length")
-    parser.add_argument("--local_rank", type=int, default=-1)  # Add this line
+    parser.add_argument("--group_by_length", action="store_true", help="Turn on group_by_length") 
+    parser.add_argument('--no_shuffle', action="store_true", help="Turn on smartbatching")
     return parser.parse_args()
 
 #Used to compute accuracy of the model
@@ -42,7 +42,7 @@ def main():
     args = get_args()
     set_seed(0) #? Consider changing
 
-    #Load and split dataset into training, testing, and validation
+    #Load and split dataset into training, testing, and validation to cache
     dataset = load_dataset("codeparrot/codecomplex", split="train")
     train_test = dataset.train_test_split(test_size=0.2)
     test_validation = train_test["test"].train_test_split(test_size=0.5)
@@ -82,12 +82,6 @@ def main():
         remove_columns=train_test_validation["train"].column_names,
     )
 
-    #TODO: Fix multi-GPU training
-    #TODO: Random print statements
-    #TODO: Every GPU runs the same number of epochs
-    #TODO: Without num_gpus, it will run every GPU on system
-    #TODO: What is DistributedLenghthGroupedSampler? How is it called? What does it do? Does it affect our SmartBatching?
-
     #This is where dynamic batching happens
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
@@ -97,7 +91,7 @@ def main():
         output_dir=args.output_dir,
         learning_rate=args.learning_rate,
         lr_scheduler_type=args.lr_scheduler_type,
-        eval_strategy="epoch",
+        eval_strategy="no", #"epoch"
         save_strategy="no", 
         logging_strategy="no",
         per_device_train_batch_size=args.batch_size,
@@ -110,10 +104,10 @@ def main():
         metric_for_best_model="accuracy",
         run_name="complexity-java",
         report_to="none",
-        deepspeed="/people/hoan163/project/ds_multi_config.json",
-        group_by_length=True,
+        deepspeed="/people/hoan163/project/ds_config.json", #"/scratch/user/u.ah287219/Project2/ds_config.json"
+        group_by_length=args.group_by_length,
         no_shuffle_group_by_length=args.no_shuffle, #! New Parameter
-        #do_train=False #? Set this to True to actually train the model
+        do_train=False #? Set this to True to output trained model
     )
 
     #Create trainer that handles training
@@ -127,8 +121,8 @@ def main():
         compute_metrics=compute_metrics,
     )
 
-    start = torch.cuda.Event(enable_timing=True) #!Remove this or no?
-    end = torch.cuda.Event(enable_timing=True)
+    # start = torch.cuda.Event(enable_timing=True) 
+    # end = torch.cuda.Event(enable_timing=True)
 
     #Custom Callbacks
     class CustomCallback(TrainerCallback):
@@ -139,19 +133,19 @@ def main():
         #Function only used if evaluation is done at the end of each epoch
         def on_epoch_end(self, args, state, control, **kwargs):
             if control.should_evaluate: 
-                print("\nBegin evaluation and logging for current epoch")
+                print("\nBegin evaluation for current epoch")
             
         def on_train_begin(self, args, state, control, **kwargs):
             print("\nTraining Begins\n")
-            start.record()
+            # start.record()
         
         def on_train_end(self, args, state, control, **kwargs):
-            end.record()
+            # end.record()
             print("\nTraining Complete")
-            print(f"Total Runtime: {str(start.elapsed_time(end)/1000)} seconds\n")
+            # print(f"Total Runtime: {str(start.elapsed_time(end)/1000)} seconds\n")
 
-            print("Final Test")
-            print(self._trainer.evaluate(eval_dataset=tokenized_datasets["test"]))
+            # print("\nFinal Test")
+            # print(self._trainer.evaluate(eval_dataset=tokenized_datasets["test"]))
 
         #After evaluation phase
         def on_evaluate(self, args, state, control, **kwargs):
@@ -159,13 +153,24 @@ def main():
 
     trainer.add_callback(CustomCallback(trainer))
     print("Model: ", args.model_ckpt)
+    print("Group_By_Length: ", args.group_by_length)
+    print("Smart_Batch: ", args.no_shuffle)
+
     trainer.train() #Train model
 
     #? Extract the total runtime of inner_training_loop from the metrics
-    # metrics = trainer.state.log_history['train_runtime]  # Get the latest log entry
-    # total_runtime = metrics.get("train_runtime", None)
-    # print(f"Total runtime of inner_training_loop: {total_runtime} seconds")
+    total_runtime = trainer.state.log_history[0]['train_runtime']
+    return total_runtime
 
 if __name__ == "__main__":
-    main()
+    runtime = main()
+    print("Runtime: " + str(runtime))
 
+'''
+For bar graph:
+* Single GPU finetuning (no group_by_length, group_by_length, smartbatching)
+* Test with different models and datasets?
+
+export PATH="/scratch/user/u.ah287219/.conda/envs/SmartBatch-env/bin:$PATH"
+export PYTHONPATH="/scratch/user/u.ah287219/.conda/envs/SmartBatch-env/lib/python3.11/site-packages:$PYTHONPATH"
+'''

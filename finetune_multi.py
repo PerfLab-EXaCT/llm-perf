@@ -24,9 +24,10 @@ def get_args():
     parser.add_argument("--num_epochs", type=int, default=5) 
     parser.add_argument("--batch_size", type=int, default=8) 
     parser.add_argument("--learning_rate", type=float, default=2e-5) 
-    parser.add_argument("--lr_scheduler_type", type=str, default="cosine") #? linear?
-    parser.add_argument("--output_dir", type=str, default="./results") 
+    parser.add_argument("--lr_scheduler_type", type=str, default="cosine") 
+    parser.add_argument("--output_dir", type=str, default="./Results_Multi") 
     parser.add_argument('--no_shuffle', action="store_true", help="Turn off shuffling and megabatches during group_by_length")
+    parser.add_argument("--local_rank", type=int, default=-1)  # Add this line
     return parser.parse_args()
 
 #Used to compute accuracy of the model
@@ -81,7 +82,13 @@ def main():
         remove_columns=train_test_validation["train"].column_names,
     )
 
-    #This class does dynamic batching 
+    #TODO: Fix multi-GPU training
+    #TODO: Random print statements
+    #TODO: Every GPU runs the same number of epochs
+    #TODO: Without num_gpus, it will run every GPU on system
+    #TODO: What is DistributedLenghthGroupedSampler? How is it called? What does it do? Does it affect our SmartBatching?
+
+    #This is where dynamic batching happens
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
     #We want TrainingArguments and Deepspeed arguments to match
@@ -103,7 +110,7 @@ def main():
         metric_for_best_model="accuracy",
         run_name="complexity-java",
         report_to="none",
-        deepspeed="/people/hoan163/project/ds_config.json",
+        deepspeed="/people/hoan163/project/ds_multi_config.json",
         group_by_length=True,
         no_shuffle_group_by_length=args.no_shuffle, #! New Parameter
         #do_train=False #? Set this to True to actually train the model
@@ -161,3 +168,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

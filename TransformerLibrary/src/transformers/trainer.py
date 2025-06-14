@@ -2474,7 +2474,7 @@ class Trainer:
 
         for epoch in range(epochs_trained, num_train_epochs): #?Goes through each epoch
 
-            print('\nEpoch ' +  str(epoch)) #?
+            # print('\nEpoch ' +  str(epoch)) #?
 
             epoch_dataloader = train_dataloader
             if hasattr(epoch_dataloader, "set_epoch"):
@@ -3732,7 +3732,7 @@ class Trainer:
 
         return ctx_manager
 
-    # @profile #!PROFILING
+    #@profile #!PROFILING
     def training_step(
         self, model: nn.Module, inputs: dict[str, Union[torch.Tensor, Any]], num_items_in_batch=None
     ) -> torch.Tensor:

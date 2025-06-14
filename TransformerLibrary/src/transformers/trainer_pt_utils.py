@@ -632,7 +632,7 @@ class LengthGroupedSampler(Sampler):
             raise ValueError("One of dataset and lengths must be provided.")
 
         self.no_shuffle = no_shuffle #?
-        print(f"LengthGroupedSampler with Smart Batching: {self.no_shuffle}") #?
+        # print(f"LengthGroupedSampler with Smart Batching: {self.no_shuffle}") #?
         self.batch_size = batch_size
         if lengths is None:
             model_input_name = model_input_name if model_input_name is not None else "input_ids"
@@ -660,7 +660,7 @@ class LengthGroupedSampler(Sampler):
         return len(self.lengths)
 
     def __iter__(self):
-        print("Indices Grouped")
+        # print("Indices Grouped")
 
         if self.no_shuffle:
             return iter(self.sorted_indices)

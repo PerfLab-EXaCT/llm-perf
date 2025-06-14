@@ -1,0 +1,35 @@
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           9352942      h100 Runtime   hoan163  R       0:09      1 h100-05
+
+ Warmup Run 
+
+[2025-06-13 19:45:58,136] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 19:46:06,918] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  False
+Smart_Batch:  False
+[1/3] g++ -MMD -MF fused_adam_frontend.o.d -DTORCH_EXTENSION_NAME=fused_adam -DTORCH_API_INCLUDE_EXTENSION_H -DPYBIND11_COMPILER_TYPE=\"_gcc\" -DPYBIND11_STDLIB=\"_libstdcpp\" -DPYBIND11_BUILD_ABI=\"_cxxabi1016\" -I/people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/deepspeed/ops/csrc/includes -I/people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/deepspeed/ops/csrc/adam -isystem /people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/include -isystem /people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/include/torch/csrc/api/include -isystem /people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/include/TH -isystem /people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/include/THC -isystem /share/apps/cuda/12.3/include -isystem /people/hoan163/.conda/envs/BatchTest/include/python3.10 -D_GLIBCXX_USE_CXX11_ABI=1 -fPIC -std=c++17 -O3 -std=c++17 -g -Wno-reorder -DVERSION_GE_1_1 -DVERSION_GE_1_3 -DVERSION_GE_1_5 -DBF16_AVAILABLE -c /people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/deepspeed/ops/csrc/adam/fused_adam_frontend.cpp -o fused_adam_frontend.o 
+[2/3] /share/apps/cuda/12.3/bin/nvcc --generate-dependencies-with-compile --dependency-output multi_tensor_adam.cuda.o.d -ccbin gcc -DTORCH_EXTENSION_NAME=fused_adam -DTORCH_API_INCLUDE_EXTENSION_H -DPYBIND11_COMPILER_TYPE=\"_gcc\" -DPYBIND11_STDLIB=\"_libstdcpp\" -DPYBIND11_BUILD_ABI=\"_cxxabi1016\" -I/people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/deepspeed/ops/csrc/includes -I/people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/deepspeed/ops/csrc/adam -isystem /people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/include -isystem /people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/include/torch/csrc/api/include -isystem /people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/include/TH -isystem /people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/include/THC -isystem /share/apps/cuda/12.3/include -isystem /people/hoan163/.conda/envs/BatchTest/include/python3.10 -D_GLIBCXX_USE_CXX11_ABI=1 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_89,code=compute_89 -gencode=arch=compute_89,code=sm_89 --compiler-options '-fPIC' -O3 -DVERSION_GE_1_1 -DVERSION_GE_1_3 -DVERSION_GE_1_5 -lineinfo --use_fast_math -gencode=arch=compute_90,code=sm_90 -gencode=arch=compute_90,code=compute_90 -DBF16_AVAILABLE -U__CUDA_NO_BFLOAT16_OPERATORS__ -U__CUDA_NO_BFLOAT162_OPERATORS__ -U__CUDA_NO_BFLOAT16_CONVERSIONS__ -std=c++17 -c /people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/deepspeed/ops/csrc/adam/multi_tensor_adam.cu -o multi_tensor_adam.cuda.o 
+[3/3] g++ fused_adam_frontend.o multi_tensor_adam.cuda.o -shared -L/people/hoan163/.conda/envs/BatchTest/lib/python3.10/site-packages/torch/lib -lc10 -lc10_cuda -ltorch_cpu -ltorch_cuda -ltorch -ltorch_python -L/share/apps/cuda/12.3/lib64 -lcudart -o fused_adam.so
+Time to load fused_adam op: 83.52559661865234 seconds
+[2025-06-13 19:47:36,500] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 43.8253, 'train_samples_per_second': 82.441, 'train_steps_per_second': 10.314, 'train_loss': 2.0239538682245577, 'epoch': 1.0}
+
+Training Complete
+Runtime: 43.8253
+
+ No Group_By_Length Runtime 
+
+
+ Group_By_Length Runtime 
+
+
+ Smart Batch 
+
+No Group_By_Length Average Runtime: 
+Group_By_Length Average Runtime: 
+Smart_Batch Average Runtime: 

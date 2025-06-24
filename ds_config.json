@@ -8,7 +8,7 @@
     },
     
     "data_sampling":{
-        "num_epochs": 3
+        "num_epochs": 1
     },
 
     "optimizer": {
@@ -29,8 +29,6 @@
              "total_num_steps": "auto",
              "warmup_num_steps": "auto"
          }
-    },
-
-    "note": "To add data offloading or no?"
+    }
 }
 

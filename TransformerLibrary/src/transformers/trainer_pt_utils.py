@@ -598,7 +598,9 @@ def get_length_grouped_indices(lengths, batch_size, mega_batch_mult=None, genera
             mega_batch_mult = 1
 
     # We need to use torch for the random part as a distributed sampler will set the random seed for torch.
-    indices = torch.randperm(len(lengths), generator=generator)
+    indices = torch.randperm(len(lengths), generator=generator) #! Disable this for testing worst case
+    # indices = list(range(0, len(lengths))) #! Disable this to go back to normal
+
     megabatch_size = mega_batch_mult * batch_size
     megabatches = [indices[i : i + megabatch_size].tolist() for i in range(0, len(lengths), megabatch_size)]
     megabatches = [sorted(megabatch, key=lambda i: lengths[i], reverse=True) for megabatch in megabatches]
@@ -632,7 +634,6 @@ class LengthGroupedSampler(Sampler):
             raise ValueError("One of dataset and lengths must be provided.")
 
         self.no_shuffle = no_shuffle #?
-        # print(f"LengthGroupedSampler with Smart Batching: {self.no_shuffle}") #?
         self.batch_size = batch_size
         if lengths is None:
             model_input_name = model_input_name if model_input_name is not None else "input_ids"
@@ -660,7 +661,6 @@ class LengthGroupedSampler(Sampler):
         return len(self.lengths)
 
     def __iter__(self):
-        # print("Indices Grouped")
 
         if self.no_shuffle:
             return iter(self.sorted_indices)

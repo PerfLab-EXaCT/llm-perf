@@ -1,0 +1,271 @@
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           9353462      h100 Runtime   hoan163  R       0:10      1 h100-01
+
+Warmup Run 
+
+Model:  openai-community/gpt2
+Group_By_Length:  False
+Smart_Batch:  False
+ninja: no work to do.
+Time to load fused_adam op: 6.180639028549194 seconds
+
+Training Begins
+
+{'train_runtime': 39.8233, 'train_samples_per_second': 90.726, 'train_steps_per_second': 11.35, 'train_loss': 2.023050763965708, 'epoch': 1.0}
+
+Training Complete
+Runtime: 39.8233
+
+No Group_By_Length Runtime 
+
+[2025-06-13 22:36:45,049] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 22:36:46,677] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  False
+Smart_Batch:  False
+ninja: no work to do.
+Time to load fused_adam op: 1.3965990543365479 seconds
+[2025-06-13 22:36:50,826] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 141.1234, 'train_samples_per_second': 128.009, 'train_steps_per_second': 16.014, 'train_loss': 0.8999777464740044, 'epoch': 5.0}
+
+Training Complete
+Runtime: 141.1234
+[2025-06-13 22:39:33,695] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 22:39:35,311] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  False
+Smart_Batch:  False
+ninja: no work to do.
+Time to load fused_adam op: 1.4122626781463623 seconds
+[2025-06-13 22:39:39,468] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 141.5657, 'train_samples_per_second': 127.609, 'train_steps_per_second': 15.964, 'train_loss': 0.9901381230987278, 'epoch': 5.0}
+
+Training Complete
+Runtime: 141.5657
+[2025-06-13 22:42:23,371] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 22:42:25,020] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  False
+Smart_Batch:  False
+ninja: no work to do.
+Time to load fused_adam op: 1.4292097091674805 seconds
+[2025-06-13 22:42:29,192] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 140.6405, 'train_samples_per_second': 128.448, 'train_steps_per_second': 16.069, 'train_loss': 1.0298092462320243, 'epoch': 5.0}
+
+Training Complete
+Runtime: 140.6405
+[2025-06-13 22:45:11,547] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 22:45:13,177] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  False
+Smart_Batch:  False
+ninja: no work to do.
+Time to load fused_adam op: 1.4065217971801758 seconds
+[2025-06-13 22:45:17,327] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 140.3529, 'train_samples_per_second': 128.711, 'train_steps_per_second': 16.102, 'train_loss': 1.0708424796045355, 'epoch': 5.0}
+
+Training Complete
+Runtime: 140.3529
+[2025-06-13 22:47:59,718] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 22:48:01,405] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  False
+Smart_Batch:  False
+ninja: no work to do.
+Time to load fused_adam op: 1.4141724109649658 seconds
+[2025-06-13 22:48:05,553] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 140.7883, 'train_samples_per_second': 128.313, 'train_steps_per_second': 16.052, 'train_loss': 0.9883538440265487, 'epoch': 5.0}
+
+Training Complete
+Runtime: 140.7883
+
+Group_By_Length Runtime 
+
+[2025-06-13 22:50:48,955] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 22:50:50,598] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  True
+Smart_Batch:  False
+ninja: no work to do.
+Time to load fused_adam op: 1.429844617843628 seconds
+[2025-06-13 22:50:56,238] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 102.8782, 'train_samples_per_second': 175.596, 'train_steps_per_second': 21.968, 'train_loss': 1.0606250864214601, 'epoch': 5.0}
+
+Training Complete
+Runtime: 102.8782
+[2025-06-13 22:53:00,755] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 22:53:02,399] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  True
+Smart_Batch:  False
+ninja: no work to do.
+Time to load fused_adam op: 1.4046525955200195 seconds
+[2025-06-13 22:53:07,983] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 102.5872, 'train_samples_per_second': 176.094, 'train_steps_per_second': 22.03, 'train_loss': 1.0167098053788717, 'epoch': 5.0}
+
+Training Complete
+Runtime: 102.5872
+[2025-06-13 22:55:12,750] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 22:55:14,371] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  True
+Smart_Batch:  False
+ninja: no work to do.
+Time to load fused_adam op: 1.402022361755371 seconds
+[2025-06-13 22:55:19,948] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 102.6903, 'train_samples_per_second': 175.917, 'train_steps_per_second': 22.008, 'train_loss': 1.3108512945934734, 'epoch': 5.0}
+
+Training Complete
+Runtime: 102.6903
+[2025-06-13 22:57:24,883] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 22:57:26,543] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  True
+Smart_Batch:  False
+ninja: no work to do.
+Time to load fused_adam op: 1.425994634628296 seconds
+[2025-06-13 22:57:32,139] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 102.2042, 'train_samples_per_second': 176.754, 'train_steps_per_second': 22.113, 'train_loss': 1.2014395654728982, 'epoch': 5.0}
+
+Training Complete
+Runtime: 102.2042
+[2025-06-13 22:59:36,078] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 22:59:37,720] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  True
+Smart_Batch:  False
+ninja: no work to do.
+Time to load fused_adam op: 1.3944532871246338 seconds
+[2025-06-13 22:59:43,281] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 102.3475, 'train_samples_per_second': 176.506, 'train_steps_per_second': 22.082, 'train_loss': 1.0860412057522124, 'epoch': 5.0}
+
+Training Complete
+Runtime: 102.3475
+
+
+
+Smart Batch 
+
+[2025-06-13 23:01:47,214] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 23:01:48,836] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  True
+Smart_Batch:  True
+ninja: no work to do.
+Time to load fused_adam op: 1.444676399230957 seconds
+[2025-06-13 23:01:54,481] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 101.8086, 'train_samples_per_second': 177.441, 'train_steps_per_second': 22.199, 'train_loss': 1.1809730192201326, 'epoch': 5.0}
+
+Training Complete
+Runtime: 101.8086
+[2025-06-13 23:03:58,364] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 23:03:59,994] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  True
+Smart_Batch:  True
+ninja: no work to do.
+Time to load fused_adam op: 1.4089925289154053 seconds
+[2025-06-13 23:04:05,611] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 101.0948, 'train_samples_per_second': 178.694, 'train_steps_per_second': 22.355, 'train_loss': 1.0912772659706858, 'epoch': 5.0}
+
+Training Complete
+Runtime: 101.0948
+[2025-06-13 23:06:08,107] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 23:06:09,735] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  True
+Smart_Batch:  True
+ninja: no work to do.
+Time to load fused_adam op: 1.3980093002319336 seconds
+[2025-06-13 23:06:15,278] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 101.9824, 'train_samples_per_second': 177.138, 'train_steps_per_second': 22.161, 'train_loss': 0.9195057556692477, 'epoch': 5.0}
+
+Training Complete
+Runtime: 101.9824
+[2025-06-13 23:08:18,811] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 23:08:20,430] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  True
+Smart_Batch:  True
+ninja: no work to do.
+Time to load fused_adam op: 1.4122579097747803 seconds
+[2025-06-13 23:08:25,998] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 101.2588, 'train_samples_per_second': 178.404, 'train_steps_per_second': 22.319, 'train_loss': 1.0449678944275442, 'epoch': 5.0}
+
+Training Complete
+Runtime: 101.2588
+[2025-06-13 23:10:29,392] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Warning: The cache directory for DeepSpeed Triton autotune, /people/hoan163/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2025-06-13 23:10:31,009] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+Model:  openai-community/gpt2
+Group_By_Length:  True
+Smart_Batch:  True
+ninja: no work to do.
+Time to load fused_adam op: 1.4068024158477783 seconds
+[2025-06-13 23:10:36,573] [WARNING] [lr_schedules.py:855:get_lr] Attempting to get learning rate from scheduler before it has started
+
+Training Begins
+
+{'train_runtime': 101.2474, 'train_samples_per_second': 178.424, 'train_steps_per_second': 22.322, 'train_loss': 0.9825248245644358, 'epoch': 5.0}
+
+Training Complete
+Runtime: 101.2474
+No Group_By_Length Average Runtime: 
+Group_By_Length Average Runtime: 
+Smart_Batch Average Runtime: 

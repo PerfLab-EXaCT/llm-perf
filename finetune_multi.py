@@ -27,6 +27,7 @@ def get_args():
     parser.add_argument("--lr_scheduler_type", type=str, default="cosine") 
     parser.add_argument("--output_dir", type=str, default="./Results_Multi") 
     parser.add_argument('--no_shuffle', action="store_true", help="Turn off shuffling and megabatches during group_by_length")
+    parser.add_argument("--group_by_length", action="store_true", help="Turn on group_by_length") 
     parser.add_argument("--local_rank", type=int, default=-1)  # Add this line
     return parser.parse_args()
 
@@ -111,9 +112,9 @@ def main():
         run_name="complexity-java",
         report_to="none",
         deepspeed="/people/hoan163/project/ds_multi_config.json",
-        group_by_length=True,
+        group_by_length=args.group_by_length,
         no_shuffle_group_by_length=args.no_shuffle, #! New Parameter
-        #do_train=False #? Set this to True to actually train the model
+        do_train=False #? Set this to True to actually train the model
     )
 
     #Create trainer that handles training
@@ -127,8 +128,8 @@ def main():
         compute_metrics=compute_metrics,
     )
 
-    start = torch.cuda.Event(enable_timing=True) #!Remove this or no?
-    end = torch.cuda.Event(enable_timing=True)
+    # start = torch.cuda.Event(enable_timing=True) #!Remove this or no?
+    # end = torch.cuda.Event(enable_timing=True)
 
     #Custom Callbacks
     class CustomCallback(TrainerCallback):
@@ -143,12 +144,12 @@ def main():
             
         def on_train_begin(self, args, state, control, **kwargs):
             print("\nTraining Begins\n")
-            start.record()
+            # start.record()
         
         def on_train_end(self, args, state, control, **kwargs):
-            end.record()
+            # end.record()
             print("\nTraining Complete")
-            print(f"Total Runtime: {str(start.elapsed_time(end)/1000)} seconds\n")
+            # print(f"Total Runtime: {str(start.elapsed_time(end)/1000)} seconds\n")
 
             print("Final Test")
             print(self._trainer.evaluate(eval_dataset=tokenized_datasets["test"]))
@@ -159,13 +160,16 @@ def main():
 
     trainer.add_callback(CustomCallback(trainer))
     print("Model: ", args.model_ckpt)
+    print("Group_By_Length: ", args.group_by_length)
+    print("Smart_Batch: ", args.no_shuffle)
+
     trainer.train() #Train model
 
     #? Extract the total runtime of inner_training_loop from the metrics
-    # metrics = trainer.state.log_history['train_runtime]  # Get the latest log entry
-    # total_runtime = metrics.get("train_runtime", None)
-    # print(f"Total runtime of inner_training_loop: {total_runtime} seconds")
+    total_runtime = trainer.state.log_history[0]['train_runtime']
+    return total_runtime
 
 if __name__ == "__main__":
-    main()
+    runtime = main()
+    print("Runtime: " + str(runtime))
 

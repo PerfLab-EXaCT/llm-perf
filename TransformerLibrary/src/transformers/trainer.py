@@ -2469,8 +2469,8 @@ class Trainer:
             self._evaluate(trial, ignore_keys_for_eval, skip_scheduler=True)
 
         #? BEGIN EPOCH TRAINING LOOP
-        # total_num_sequences = num_examples
-        # total_num_tokens = self.num_tokens(train_dataloader) #?Includes zero padding
+        total_num_sequences = num_examples #?Total number of sequences in the dataset
+        total_num_tokens = self.num_tokens(train_dataloader) #?Includes zero padding
 
         for epoch in range(epochs_trained, num_train_epochs): #?Goes through each epoch
 
@@ -2520,29 +2520,23 @@ class Trainer:
                 batch_samples, num_items_in_batch = self.get_batch_samples(epoch_iterator, num_batches, args.device)
                 for i, inputs in enumerate(batch_samples):
 
-                    # #? Padding Counting Function
-                    # for number, sequence in enumerate(inputs['input_ids']): #?Goes through each sequence in the batch
+                    #? Padding Counting Function
+                    for sequence_idx, sequence in enumerate(inputs['input_ids']): #?Goes through each sequence in the batch
 
-                    #     #no_padding_inputs = sequence[sequence != 0]
-                    #     no_padding_inputs = inputs['input_ids'][number][inputs['input_ids'][number] != self.processing_class.pad_token_id]
-                    #     length_no_padding_inputs = len(sequence) - (sequence == self.processing_class.pad_token_id).sum().item() #Length of sequence - number of zeros
-
-                    #     test = inputs['attention_mask'][number][inputs['attention_mask'][number] == 1] #valid tokens
+                        no_padding_inputs = inputs['input_ids'][sequence_idx][inputs['input_ids'][sequence_idx] != self.processing_class.pad_token_id] # non pad tokens
+                        length_no_padding_inputs = len(sequence) - (sequence == self.processing_class.pad_token_id).sum().item() #number of non pad tokens
                     
-                    #     if len(no_padding_inputs) != length_no_padding_inputs:
-                    #         raise RuntimeError("Padding calculations incorrect")
+                        if len(no_padding_inputs) != length_no_padding_inputs:
+                            raise RuntimeError("Padding calculations incorrect")
                         
-                    #     # print(inputs['input_ids'][number])
-                    #     # print(inputs['attention_mask'][number])
+                        test = inputs['attention_mask'][sequence_idx][inputs['attention_mask'][sequence_idx] == 1] #valid tokens
 
-                    #     if len(test) != len(no_padding_inputs):
-                    #         print(len(test))
-                    #         print(length_no_padding_inputs)
-                    #         raise RuntimeError("Attention mask calculations incorrect")
+                        if len(test) != len(no_padding_inputs):
+                            raise RuntimeError("Attention mask calculations incorrect")
 
-                    #     # Append sequence lengths and zero padding
-                    #     total_nonzero_tokens += length_no_padding_inputs
-                    # #? End Function
+                        # Append sequence lengths and zero padding
+                        total_nonzero_tokens += length_no_padding_inputs
+                    #? End Function
 
                     step += 1
                     do_sync_step = (step + 1) % args.gradient_accumulation_steps == 0 or (step + 1) == steps_in_epoch
@@ -2673,13 +2667,14 @@ class Trainer:
                         xm.mark_step()
                     break
 
-            # #?Metrics for zero padding
-            # total_zero_padding = total_num_tokens - total_nonzero_tokens
-            # print(f"Epoch {epoch} Padding Metrics")
-            # print("Total number of zero padding vs real tokens: " + str(total_zero_padding) + " : " + str(total_nonzero_tokens))
-            # print("Percentage of zero padding in epoch: " + str((total_zero_padding / total_num_tokens) * 100) + "%")
-            # print("Average number of zero padding per sequence: " + str(total_zero_padding / total_num_sequences))
-            # #?End Metrics
+            #?Metrics for zero padding
+            total_zero_padding = total_num_tokens - total_nonzero_tokens
+            print(f"Epoch {epoch} Padding Metrics")
+            print("Total number of zero tokens vs nonzero tokens: " + str(total_zero_padding) + " vs " + str(total_nonzero_tokens))
+            print("Percentage of zero padding in epoch: " + str((total_zero_padding / total_num_tokens) * 100) + "%")
+            print("Average number of zero padding per sequence: " + str(total_zero_padding / total_num_sequences))
+            print("Ratio of zero padding to nonzero tokens: " +  "1 : " + str(total_num_tokens / total_zero_padding))
+            #?End Metrics
 
             if step < 0:
                 logger.warning(
@@ -5264,6 +5259,7 @@ class Trainer:
                     self.model.hf_quantizer.quantization_config.bnb_4bit_quant_storage, override=True
                 )
 
+    #Fetches batches and number of items
     def get_batch_samples(self, epoch_iterator, num_batches, device):
         batch_samples = []
         num_items_in_batch = None
